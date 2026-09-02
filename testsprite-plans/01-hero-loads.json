@@ -1,0 +1,21 @@
+{
+  "projectId": "f237c4c8-3d57-417f-8ca0-f215715f8b93",
+  "type": "frontend",
+  "name": "Hero — canvas sequence loads and initial narrative shows",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the homepage /" },
+    {
+      "type": "assertion",
+      "description": "A full-viewport <canvas> element is present and visible in the hero section"
+    },
+    {
+      "type": "assertion",
+      "description": "The text 'G47 Studio' and the line 'Heritage, thread by thread.' are visible on screen"
+    },
+    { "type": "action", "description": "Scroll down roughly 40% of the first viewport-height of scroll distance" },
+    {
+      "type": "assertion",
+      "description": "The hero canvas image content visibly changes from its initial frame after scrolling (the rendered pixels differ from the pre-scroll screenshot)"
+    }
+  ]
+}

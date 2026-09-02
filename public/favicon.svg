@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#060606"/>
+  <!-- Stylised 'A' mark with block-print star -->
+  <text x="16" y="22" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="300" fill="#E8DCC8" letter-spacing="-1">A</text>
+  <!-- Star dot above the A as block motif -->
+  <circle cx="16" cy="5" r="1.5" fill="#C4A882"/>
+</svg>

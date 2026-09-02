@@ -1,0 +1,26 @@
+{
+  "projectId": "f237c4c8-3d57-417f-8ca0-f215715f8b93",
+  "type": "frontend",
+  "name": "Nav — wordmark, links, and scroll-triggered background appear",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the homepage /" },
+    {
+      "type": "assertion",
+      "description": "The fixed nav bar shows the wordmark 'G47' at the top-left"
+    },
+    {
+      "type": "assertion",
+      "description": "The nav bar shows exactly three links with the text 'The Craft', 'Collection', and 'Inquire'"
+    },
+    { "type": "action", "description": "Scroll down 200 pixels" },
+    {
+      "type": "assertion",
+      "description": "The nav bar now has a visible background/border (its computed background-color is no longer fully transparent, or it has a bottom border), compared to fully transparent at the top of the page"
+    },
+    { "type": "action", "description": "Click the 'Collection' link in the nav bar" },
+    {
+      "type": "assertion",
+      "description": "The page scrolls to and the viewport shows a section containing the heading text 'Six pieces. No repeats.'"
+    }
+  ]
+}

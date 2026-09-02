@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+.vercel
+.testsprite
+.agents
+.claude
+remotion-hero
+*.log

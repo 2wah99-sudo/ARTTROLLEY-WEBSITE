@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://out-arttrolley.vercel.app/sitemap.xml

@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink:       #060606;
+  --parchment: #EDE8E0;
+  --clay:      #B5622A;
+  --gold:      #C9A84C;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto; /* we handle our own smoothing */
+  background: var(--ink);
+  color: var(--parchment);
+}
+
+body {
+  background: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Custom cursor — hide native pointer when JS custom cursor is active ─── */
+/* Class toggled by CustomCursor.tsx on mount. Coarse-pointer (touch) devices
+   never add this class, so they always keep the native cursor.               */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(237,232,224,0.10); border-radius: 2px; }
+
+/* ── Motion system foundations ─────────────────────────────────────────────
+   Elements tagged with data-image-reveal / data-reveal / data-reveal-item
+   are invisible on first paint; MotionSystem.tsx makes them autoAlpha:1
+   as they scroll into view. Keeps un-animated state clean on JS-off.       */
+html [data-image-reveal],
+html [data-reveal]:not([data-reveal-item]),
+html [data-reveal-group] {
+  visibility: visible; /* fallback if JS off */
+}
+
+/* .rule / .label / .prose-body live in Tailwind's `components` layer (not
+   plain un-layered CSS after `@tailwind utilities`) so that a Tailwind
+   color/size utility written alongside them in a className (e.g.
+   `label text-gold/80`, `label text-ink`) correctly wins the cascade.
+   Un-layered, these classes' own `color`/`font-size` had the same
+   specificity as the utility but came later in the compiled stylesheet, so
+   they silently won at rest — only `:hover` (higher-specificity pseudo)
+   ever showed the intended color. That's why "Request →" rendered as
+   near-invisible parchment-on-parchment, and why every `label text-gold/*`
+   accent (nav links, "Acquire", section eyebrows) sat at the default faded
+   color until hovered. */
+/* ── GooeyLoader ─────────────────────────────────────────────────────────── */
+/* Defined here (not inline) to avoid SSR/client hydration mismatch on the
+   content:'' pseudo-element, which Next.js encodes differently server-side. */
+.gooey-loader {
+  width: 12em;
+  height: 3em;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 8px solid var(--gooey-border-color, #ef4444);
+  filter: url(#gooey-loader-filter);
+}
+.gooey-loader::before,
+.gooey-loader::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+.gooey-loader::before {
+  width: 22em;
+  height: 18em;
+  background-color: var(--gooey-primary-color, #ffffff);
+  left: -2em;
+  bottom: -18em;
+  animation: gooey-loader-wee1 2s linear infinite;
+}
+.gooey-loader::after {
+  width: 16em;
+  height: 12em;
+  background-color: var(--gooey-secondary-color, #ef4444);
+  left: -4em;
+  bottom: -12em;
+  animation: gooey-loader-wee2 2s linear infinite 0.75s;
+}
+@keyframes gooey-loader-wee1 {
+  0%   { transform: translateX(-10em) rotate(0deg); }
+  100% { transform: translateX(7em) rotate(180deg); }
+}
+@keyframes gooey-loader-wee2 {
+  0%   { transform: translateX(-8em) rotate(0deg); }
+  100% { transform: translateX(8em) rotate(180deg); }
+}
+
+/* ── Floating Orb drift keyframes ─────────────────────────────────────────
+   Five independent drift paths — each orb follows a slow Lissajous-like
+   arc so the motion is organic, not a simple linear translate.             */
+@keyframes orb-drift-1 {
+  0%   { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+  33%  { transform: translate(-44%, -58%) scale(1.08) rotate(4deg); }
+  66%  { transform: translate(-56%, -44%) scale(0.95) rotate(-3deg); }
+  100% { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+}
+@keyframes orb-drift-2 {
+  0%   { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+  25%  { transform: translate(-58%, -44%) scale(1.05) rotate(-5deg); }
+  50%  { transform: translate(-44%, -55%) scale(0.97) rotate(3deg); }
+  75%  { transform: translate(-54%, -48%) scale(1.03) rotate(-2deg); }
+  100% { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+}
+@keyframes orb-drift-3 {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  40%  { transform: translate(-42%, -60%) scale(1.1); }
+  80%  { transform: translate(-58%, -42%) scale(0.92); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes orb-drift-4 {
+  0%   { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+  30%  { transform: translate(-60%, -42%) scale(1.06) rotate(6deg); }
+  70%  { transform: translate(-40%, -56%) scale(0.96) rotate(-4deg); }
+  100% { transform: translate(-50%, -50%) scale(1)    rotate(0deg); }
+}
+@keyframes orb-drift-5 {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  50%  { transform: translate(-44%, -56%) scale(1.12); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Wire animation durations to class names (Tailwind can't generate arbitrary
+   `animation` values, so we declare them here as plain CSS).               */
+.orb-drift-1 { animation: orb-drift-1 22s ease-in-out infinite; }
+.orb-drift-2 { animation: orb-drift-2 31s ease-in-out infinite; }
+.orb-drift-3 { animation: orb-drift-3 26s ease-in-out infinite; }
+.orb-drift-4 { animation: orb-drift-4 19s ease-in-out infinite; }
+.orb-drift-5 { animation: orb-drift-5 35s ease-in-out infinite; }
+
+/* ── Card shimmer sweep ────────────────────────────────────────────────────
+   A single bright diagonal sweep across a card on hover. Applied via a
+   ::before pseudo on .shimmer-card — CSS handles the full animation so
+   React never re-renders for it.                                            */
+@keyframes shimmer-sweep {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(220%)  skewX(-20deg); }
+}
+.shimmer-card { position: relative; overflow: hidden; }
+.shimmer-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(201,168,76,0.10) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%) skewX(-20deg);
+  pointer-events: none;
+  z-index: 5;
+}
+.shimmer-card:hover::before {
+  animation: shimmer-sweep 0.9s ease-out forwards;
+}
+
+/* ── Gold rule draw-in ─────────────────────────────────────────────────────
+   Horizontal gold line that grows from 0 to its full width on scroll-entry.
+   Pair with the `.draw-rule` class and trigger by adding `.drawn` in JS.   */
+@keyframes draw-rule {
+  from { width: 0; opacity: 0; }
+  to   { width: 100%; opacity: 1; }
+}
+.draw-rule { animation: draw-rule 1.4s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+/* ── Number glow pulse ─────────────────────────────────────────────────────
+   Warm golden text-shadow pulse that fires once when the counter finishes. */
+@keyframes number-glow {
+  0%   { text-shadow: 0 0  0px rgba(201,168,76,0); }
+  40%  { text-shadow: 0 0 40px rgba(201,168,76,0.45), 0 0 80px rgba(201,168,76,0.20); }
+  100% { text-shadow: 0 0  0px rgba(201,168,76,0); }
+}
+.number-glow { animation: number-glow 2.2s ease-out forwards; }
+
+/* ── Block-print stamp pulse ───────────────────────────────────────────────
+   Subtle scale+opacity pulse used on the decorative watermark SVG motifs.  */
+@keyframes stamp-breathe {
+  0%, 100% { opacity: 0.04; transform: scale(1); }
+  50%       { opacity: 0.07; transform: scale(1.015); }
+}
+.stamp-breathe { animation: stamp-breathe 8s ease-in-out infinite; }
+
+/* ── Quote mark drift ──────────────────────────────────────────────────────
+   Large decorative " mark in Voices drifts very slowly upward.            */
+@keyframes quote-drift {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50%       { transform: translateY(-18px) rotate(0.5deg); }
+}
+.quote-drift { animation: quote-drift 14s ease-in-out infinite; }
+
+/* ── Beam scan ─────────────────────────────────────────────────────────────
+   Single diagonal beam of light that sweeps across an image on hover.      */
+@keyframes beam-scan {
+  0%   { left: -40%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { left: 140%; opacity: 0; }
+}
+
+/* ── Hero ambient pulse ────────────────────────────────────────────────────
+   Slow warm glow behind the model on the hero first frame. Blood-red tones
+   pulse very gently — reads as candlelight/torchlight, not a UI effect.   */
+@keyframes hero-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.06); }
+}
+
+@layer components {
+  .rule { height: 1px; background: var(--gold); opacity: 0.4; }
+
+  .label {
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    font-size: 0.6875rem; /* 11px — raised from 10px for legibility floor */
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(237,232,224,0.55);
+  }
+
+  /* Reading-pace body copy — long-form prose paragraphs only (Manifesto,
+     Craftsmanship), not UI labels/nav/form text. 17px rather than the
+     Tailwind-default 16px, after Apple's DESIGN.md principle: the extra
+     pixel is what separates "reading" copy from "scanning" copy. */
+  .prose-body {
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.65;
+  }
+}

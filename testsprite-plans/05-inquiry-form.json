@@ -1,0 +1,18 @@
+{
+  "projectId": "f237c4c8-3d57-417f-8ca0-f215715f8b93",
+  "type": "frontend",
+  "name": "Inquiry form — fill and submit shows a confirmation state",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the homepage / and scroll to the section with id 'inquire'" },
+    {
+      "type": "assertion",
+      "description": "A form is visible with a Name field, an Email field, a message/textarea field, and a 'Submit Inquiry' button"
+    },
+    { "type": "action", "description": "Fill Name with 'Test User', Email with 'test@example.com', and the message field with 'Interested in a custom indigo kurti.'" },
+    { "type": "action", "description": "Click the 'Submit Inquiry' button" },
+    {
+      "type": "assertion",
+      "description": "After submission, the form is replaced by a confirmation message containing the word 'Received.'"
+    }
+  ]
+}

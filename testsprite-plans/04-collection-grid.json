@@ -1,0 +1,21 @@
+{
+  "projectId": "f237c4c8-3d57-417f-8ca0-f215715f8b93",
+  "type": "frontend",
+  "name": "Collection grid — six pieces render with name, number, and image",
+  "planSteps": [
+    { "type": "action", "description": "Navigate to the homepage / and scroll to the section with id 'collection'" },
+    {
+      "type": "assertion",
+      "description": "The heading text 'Six pieces. No repeats.' is visible"
+    },
+    {
+      "type": "assertion",
+      "description": "Exactly 6 collection items are rendered, each with a visible product image, a name (e.g. 'Nilgiri Kurti'), and a two-digit number (01 through 06)"
+    },
+    { "type": "action", "description": "Click on the first collection item" },
+    {
+      "type": "assertion",
+      "description": "The page navigates to or scrolls to the section with id 'inquire'"
+    }
+  ]
+}
