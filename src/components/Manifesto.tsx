@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import GoldenDust from './GoldenDust'
+import ScrollRevealText from './ScrollRevealText'
 
 // Block-print inspired geometric SVG motif — a stylised grid of repeating
 // diamonds drawn with a single path. Rendered as a faint watermark in the
@@ -91,7 +92,11 @@ function AnimatedRule({ delay = 0 }: { delay?: number }) {
 export default function Manifesto() {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  // Foreground content drifts up (negative) while the background motif
+  // layer drifts down (positive) — opposing directions at different rates
+  // is what reads as depth/parallax rather than everything moving together.
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '-6%'])
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '10%'])
 
   return (
     <section
@@ -106,19 +111,23 @@ export default function Manifesto() {
       {/* Fine golden dust motes */}
       <GoldenDust count={60} className="z-[1]" />
 
-      {/* Decorative block-print motif — top-right corner (mouse depth layer) */}
-      <div data-mouse-depth="0.025" className="absolute inset-0 pointer-events-none z-[1]">
-        <BlockPrintStamp
-          className="text-parchment w-[280px] md:w-[420px] top-8 right-4 md:right-12 opacity-100"
-        />
-      </div>
+      {/* Background motif layer — scroll-parallaxed opposite the foreground
+          content below (bgY vs y), on top of the existing mouse-driven
+          depth so the motifs respond to both scroll and cursor. */}
+      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-[1]">
+        <div data-mouse-depth="0.025" className="absolute inset-0">
+          <BlockPrintStamp
+            className="text-parchment w-[280px] md:w-[420px] top-8 right-4 md:right-12 opacity-100"
+          />
+        </div>
 
-      {/* Bottom-left mirror motif — opposite depth so they drift apart */}
-      <div data-mouse-depth="-0.018" className="absolute inset-0 pointer-events-none z-[1]">
-        <BlockPrintStamp
-          className="text-parchment w-[160px] md:w-[240px] bottom-16 left-4 md:left-12 opacity-100 [animation-delay:-4s]"
-        />
-      </div>
+        {/* Bottom-left mirror motif — opposite depth so they drift apart */}
+        <div data-mouse-depth="-0.018" className="absolute inset-0">
+          <BlockPrintStamp
+            className="text-parchment w-[160px] md:w-[240px] bottom-16 left-4 md:left-12 opacity-100 [animation-delay:-4s]"
+          />
+        </div>
+      </motion.div>
 
       {/* Chapter marker */}
       <motion.span
@@ -168,11 +177,10 @@ export default function Manifesto() {
             viewport={{ once: true, margin: '-10% 0px' }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
           >
-            <p className="prose-body font-sans md:text-lg text-smoke font-light">
-              Slow fashion, heritage craft preserved by hand, and an
-              uncompromising standard of artisanal luxury — Arttrolley makes
-              clothing the way it was made before speed became the point.
-            </p>
+            <ScrollRevealText
+              className="prose-body font-sans md:text-lg text-smoke font-light"
+              text="Slow fashion, heritage craft preserved by hand, and an uncompromising standard of artisanal luxury — Arttrolley makes clothing the way it was made before speed became the point."
+            />
             <a
               href="/collection"
               className="inline-block mt-7 label text-gold/80 hover:text-gold transition-colors duration-500 border-b border-gold/30 hover:border-gold pb-px"

@@ -69,15 +69,17 @@ function releaseFrame(f: Frame) {
 // ones without re-attempting that trade. If decode-catch-up lag comes up
 // again, the fix belongs on the asset side (smaller/faster-to-decode
 // frames) rather than further tuning this window blind.
-const MAX_INFLIGHT = 16; // concurrent decodes — wider pipeline for 540-frame film
-// Symmetric 55/55 buffer: keep the 55 frames you just passed AND the 55 you
-// are about to reach.  Scrubbing backward no longer hits cold frames because
-// the rear window matches the forward one.
-const AHEAD  = 55; // frames pre-decoded ahead of the playhead
-const BEHIND = 55; // frames held behind the playhead (for backward scrub)
-const KEEP   = 120; // resident decoded window  (55 + 55 + 10 margin)
-const EVICT_AT = 145; // sweep only when the map grows past this
-const FETCH_CONCURRENCY = 16; // in-order blob fetches (network, not memory)
+// Production tuning pass: the 16/55/55/120/145 window above traded memory
+// for lookahead depth, but a wider decode window means more competition for
+// the one decode that's actually on screen — tightened back down so the
+// currently-visible frame always wins the queue instead of waiting behind
+// dozens of frames the viewer hasn't reached yet.
+const MAX_INFLIGHT = 11; // concurrent decodes
+const AHEAD  = 45; // frames pre-decoded ahead of the playhead
+const BEHIND = 45; // frames held behind the playhead (for backward scrub)
+const KEEP   = 80; // resident decoded window
+const EVICT_AT = 95; // sweep only when the map grows past this
+const FETCH_CONCURRENCY = 11; // in-order blob fetches (network, not memory)
 
 type Api = {
   draw: (canvas: HTMLCanvasElement | null, progress: number) => void;
@@ -300,7 +302,9 @@ export function useFrameSequence(name: string) {
       lastDrawnIdx.current = i;
 
       const src = frame.img;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Capped at 1.5 (was 2) — full retina density buys little visible
+      // sharpness on a scroll-scrubbed film but scales draw cost quadratically.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       const cw = Math.round(canvas.clientWidth * dpr);
       const ch = Math.round(canvas.clientHeight * dpr);
       if (canvas.width !== cw || canvas.height !== ch) {
@@ -310,10 +314,22 @@ export function useFrameSequence(name: string) {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.clearRect(0, 0, cw, ch);
+      // No per-frame color filter (CSS or ctx.filter) — both were tried and
+      // both cost real time on a canvas redrawn continuously during scroll,
+      // which is what read as stuttering/skipping. The footage keeps its
+      // own native colour as shot; grade it in the source asset if a look
+      // is wanted, not live in the draw loop.
       const s = Math.max(cw / src.width, ch / src.height);
       const w = src.width * s;
       const h = src.height * s;
-      ctx.drawImage(src, (cw - w) / 2, (ch - h) / 2, w, h);
+      // Cover-fit crops evenly top/bottom by default (anchor 0.5), which on
+      // tall/narrow viewports cuts into the model's eyes and hair — the
+      // subject sits in the upper half of the source frame, not dead
+      // centre. Anchoring closer to the top keeps her whole head in frame;
+      // horizontal stays centred since the crop there is symmetric on the
+      // subject.
+      const anchorY = 0.18;
+      ctx.drawImage(src, (cw - w) / 2, (ch - h) * anchorY, w, h);
     }
 
     /**

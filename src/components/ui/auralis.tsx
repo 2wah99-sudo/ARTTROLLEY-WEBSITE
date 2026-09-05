@@ -20,6 +20,8 @@ uniform vec2  u_resolution;
 uniform float u_time;
 uniform float u_grain;
 uniform vec3  u_colors[3];
+uniform vec2  u_mouse;      // 0..1, smoothed toward pointer position
+uniform float u_mouseStrength;
 
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -47,21 +49,49 @@ float snoise(vec2 v) {
   return 130.0 * dot(m, g);
 }
 
+// Fractal Brownian Motion — layers a few octaves of the same noise at
+// shrinking amplitude/growing frequency. This is what turns a single flat
+// noise pass into something that reads as slow-moving fluid/smoke instead
+// of a static mottled texture — the actual difference between "shader
+// background" and "looks like a video."
+float fbm(vec2 p) {
+  float sum = 0.0;
+  float amp = 0.55;
+  float freq = 1.0;
+  for (int i = 0; i < 4; i++) {
+    sum += amp * snoise(p * freq);
+    freq *= 2.02;
+    amp *= 0.55;
+  }
+  return sum;
+}
+
 void main() {
   vec2 uv = vUv;
   float ratio = u_resolution.x / u_resolution.y;
   vec2 p = uv * vec2(ratio, 1.0);
   float t = u_time * 0.2;
 
-  float n1 = snoise(p * 0.5 + t);
-  float n2 = snoise(p * 0.9 - t * 0.5 + n1);
+  // Cursor warps the flow field like a stone dropped in liquid — a soft,
+  // falling-off displacement rather than a hard distortion, so it reads as
+  // the fluid responding to you, not a cursor-follow effect.
+  vec2 mp = u_mouse * vec2(ratio, 1.0);
+  float mouseDist = length(p - mp);
+  vec2 mouseWarp = normalize(p - mp + 0.0001) * exp(-mouseDist * 2.2) * u_mouseStrength;
+  p += mouseWarp;
 
-  float light = pow(abs(n2), 2.5) * 0.5;
+  float n1 = fbm(p * 0.45 + t);
+  float n2 = fbm(p * 0.8 - t * 0.55 + n1 * 0.6);
+  float n3 = fbm(p * 1.6 + t * 0.35 - n2 * 0.4);
+
+  float light = pow(abs(n2), 2.3) * 0.55;
+  float sheen = pow(max(n3, 0.0), 3.0) * 0.35;
 
   vec3 col = vec3(0.02, 0.01, 0.01);
 
-  col += u_colors[0] * smoothstep(0.1, 1.0, n1) * 0.5;
+  col += u_colors[0] * smoothstep(0.05, 1.0, n1) * 0.55;
   col += u_colors[1] * light;
+  col += u_colors[2] * sheen;
 
   float grain = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453 + u_time);
   col += (grain - 0.5) * u_grain * 0.5;
@@ -143,7 +173,28 @@ const Auralis = ({
       time: gl.getUniformLocation(program, "u_time"),
       grain: gl.getUniformLocation(program, "u_grain"),
       colors: gl.getUniformLocation(program, "u_colors"),
+      mouse: gl.getUniformLocation(program, "u_mouse"),
+      mouseStrength: gl.getUniformLocation(program, "u_mouseStrength"),
     };
+
+    // Pointer position, smoothed toward the target each frame rather than
+    // snapping — the same lerp-toward-target trick as everything else on
+    // this site's motion system, so the liquid warp trails the cursor
+    // instead of jumping to it.
+    const mouseTarget = { x: 0.5, y: 0.5 }
+    const mouseSmoothed = { x: 0.5, y: 0.5 }
+    let mouseStrengthTarget = 0
+    let mouseStrengthSmoothed = 0
+
+    const onPointerMove = (e: PointerEvent) => {
+      const rect = container.getBoundingClientRect();
+      mouseTarget.x = (e.clientX - rect.left) / rect.width;
+      mouseTarget.y = 1 - (e.clientY - rect.top) / rect.height;
+      mouseStrengthTarget = 0.14;
+    };
+    const onPointerLeave = () => { mouseStrengthTarget = 0 };
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    container.addEventListener("pointerleave", onPointerLeave);
 
     const resize = () => {
       // This canvas is sticky-pinned behind roughly half the page's scroll
@@ -181,6 +232,12 @@ const Auralis = ({
       const flat = new Float32Array(colors.slice(0, 3).flatMap(hexToRgb));
       gl.uniform3fv(locs.colors, flat);
 
+      mouseSmoothed.x += (mouseTarget.x - mouseSmoothed.x) * 0.06;
+      mouseSmoothed.y += (mouseTarget.y - mouseSmoothed.y) * 0.06;
+      mouseStrengthSmoothed += (mouseStrengthTarget - mouseStrengthSmoothed) * 0.04;
+      gl.uniform2f(locs.mouse, mouseSmoothed.x, mouseSmoothed.y);
+      gl.uniform1f(locs.mouseStrength, mouseStrengthSmoothed);
+
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     };
 
@@ -191,6 +248,8 @@ const Auralis = ({
     return () => {
       ro.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pointermove', onPointerMove);
+      container.removeEventListener('pointerleave', onPointerLeave);
       cancelAnimationFrame(raf);
       gl.deleteProgram(program);
     };

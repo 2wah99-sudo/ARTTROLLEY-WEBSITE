@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Reveal from '@/components/Reveal'
+import LineReveal from '@/components/LineReveal'
+import RedAmbientBackground from '@/components/RedAmbientBackground'
 import ProductGallery from '@/components/ProductGallery'
 import SizeAndBag from '@/components/SizeAndBag'
 import { PRODUCTS, getProduct } from '@/lib/products'
@@ -39,6 +41,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     <main className="bg-ink min-h-screen">
       <Nav />
 
+      <RedAmbientBackground>
       <section className="pt-32 md:pt-40 pb-24 md:pb-32 px-6 md:px-10">
         <div className="max-w-[1600px] mx-auto">
           <Reveal className="mb-10">
@@ -52,11 +55,17 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <ProductGallery images={product.gallery} name={product.name} />
             </Reveal>
 
-            <Reveal delay={0.1}>
-              <p className="label mb-3 text-gold/70">{product.category}</p>
-              <h1 className="font-serif text-3xl md:text-5xl font-light leading-[1.1] text-parchment">
-                {product.name}
-              </h1>
+            <div>
+              <Reveal delay={0.1}>
+                <p className="label mb-3 text-gold/70">{product.category}</p>
+              </Reveal>
+              <LineReveal
+                as="h1"
+                className="font-serif text-3xl md:text-5xl font-light leading-[1.1] text-parchment"
+                lines={[product.name]}
+                delay={0.1}
+              />
+              <Reveal delay={0.3}>
               <p className="mt-3 font-sans text-base text-smoke">{product.note}</p>
               <p className="mt-6 font-serif text-2xl text-parchment/90 tabular-nums">
                 ₹{product.price.toLocaleString('en-IN')}
@@ -93,7 +102,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   </div>
                 ))}
               </div>
-            </Reveal>
+              </Reveal>
+            </div>
           </div>
         </div>
       </section>
@@ -109,6 +119,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </a>
         </div>
       </section>
+      </RedAmbientBackground>
 
       <Footer />
     </main>

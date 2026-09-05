@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
+import LineReveal from './LineReveal'
 
 const DNA = [
   {
@@ -46,9 +47,11 @@ export default function SpecSheet() {
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="label mb-3">Fabric DNA — No. AT-014</p>
-          <h2 className="font-serif text-3xl md:text-4xl font-light text-parchment mb-4 max-w-xl">
-            Every detail, disclosed.
-          </h2>
+          <LineReveal
+            as="h2"
+            className="font-serif text-3xl md:text-4xl font-light text-parchment mb-4 max-w-xl"
+            lines={['Every detail, disclosed.']}
+          />
           <p className="font-sans text-sm text-smoke mb-16 max-w-md">
             No shortcuts hidden behind a marketing gloss.
           </p>

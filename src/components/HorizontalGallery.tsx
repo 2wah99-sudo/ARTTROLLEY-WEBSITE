@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import LineReveal from './LineReveal'
 
 // Replace these with real Arttrolley editorial images once available.
 // For now use the product images that already exist.
@@ -123,12 +124,12 @@ export default function HorizontalGallery() {
           <p className="label text-gold/60 mb-3" style={{ letterSpacing: '0.28em' }}>
             Editorial
           </p>
-          <h2
+          <LineReveal
+            as="h2"
             className="font-serif font-light text-parchment leading-tight"
             style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
-          >
-            Inside the Atelier
-          </h2>
+            lines={['Inside the Atelier']}
+          />
         </motion.div>
 
         {/* "Drag to explore" label — era-residence pattern */}

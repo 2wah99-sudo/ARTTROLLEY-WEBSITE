@@ -69,14 +69,38 @@ export default function Preloader() {
       aria-live="polite"
       aria-label="Loading Arttrolley"
     >
-      {/* Wordmark */}
+      {/* Wordmark — types itself in letter by letter, cursor blinking at
+          the end, before the gooey loader takes over. */}
       <div className="flex flex-col items-center gap-3 select-none">
         <h1
-          className="font-serif tracking-widest2 text-white uppercase"
+          className="font-serif tracking-widest2 text-white uppercase flex"
           style={{ fontSize: 'clamp(1.6rem, 4vw, 2.8rem)', letterSpacing: '0.35em' }}
           aria-hidden="true"
         >
-          ARTTROLLEY<span className="text-red-500">.</span>
+          {'ARTTROLLEY'.split('').map((ch, i) => (
+            <span
+              key={i}
+              style={{
+                opacity: 0,
+                animation: `type-letter-in 0.05s ease-out ${0.3 + i * 0.07}s forwards`,
+              }}
+            >
+              {ch}
+            </span>
+          ))}
+          <span
+            className="text-red-500"
+            style={{ opacity: 0, animation: `type-letter-in 0.05s ease-out ${0.3 + 10 * 0.07}s forwards` }}
+          >
+            .
+          </span>
+          <span
+            className="inline-block w-[2px] ml-1 bg-white/70"
+            style={{
+              opacity: 0,
+              animation: `type-letter-in 0.05s ease-out ${0.3 + 11 * 0.07}s forwards, blink-cursor 0.9s step-end ${0.3 + 11 * 0.07}s infinite`,
+            }}
+          />
         </h1>
         <p
           className="text-white/30 uppercase"

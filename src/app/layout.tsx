@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fraunces, DM_Sans } from 'next/font/google'
+import localFont from 'next/font/local'
 import SmoothScroll from '@/components/SmoothScroll'
 import Preloader from '@/components/Preloader'
 import CustomCursor from '@/components/CustomCursor'
@@ -23,6 +24,27 @@ const dmSans = DM_Sans({
   variable: '--font-dm-sans',
   display: 'swap',
   weight: ['300', '400', '500'],
+})
+
+// Reserved for the hero wordmark only. Closest free equivalent to "Casta"
+// (a commercial/boutique display face, not on Google Fonts — no licensed
+// file available to load exactly) — Yeseva One is the standard free
+// substitute for that same bold, curvy, high-contrast vintage-display
+// category. Self-hosted via next/font/local (the .ttf lives in
+// src/app/fonts/) instead of next/font/google — this dev sandbox's Node
+// process can't complete the TLS handshake to fonts.googleapis.com, so
+// every next/font/google face in this project has silently been falling
+// back to its metrics-only placeholder locally all session (still fine in
+// production, where that fetch succeeds) — self-hosting sidesteps that
+// entirely, in both places, since the file ships in the repo and needs no
+// runtime fetch at all. Nowhere else on the site uses this — that
+// exclusivity is what keeps it feeling like a mark instead of just
+// another heading.
+const yesevaOne = localFont({
+  src: './fonts/YesevaOne-Regular.ttf',
+  variable: '--font-yeseva',
+  display: 'swap',
+  weight: '400',
 })
 
 const SITE_URL = 'https://out-arttrolley.vercel.app'
@@ -86,7 +108,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${dmSans.variable} ${yesevaOne.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />

@@ -10,6 +10,7 @@
  */
 
 import { motion } from 'framer-motion'
+import LineReveal from './LineReveal'
 import { PRODUCTS } from '@/lib/products'
 
 const TEASER = PRODUCTS.slice(0, 4)
@@ -149,13 +150,14 @@ export default function CollectionGrid() {
           <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
             The Curated Collection
           </p>
-          <h2
+          <LineReveal
+            as="h2"
             className="font-serif font-light text-parchment leading-tight"
             style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)' }}
           >
-            {PRODUCTS.length} pieces.<br />
-            <em className="text-clay not-italic">No repeats.</em>
-          </h2>
+            <span>{PRODUCTS.length} pieces.</span>
+            <span className="text-clay">No repeats.</span>
+          </LineReveal>
         </motion.div>
 
         <motion.a

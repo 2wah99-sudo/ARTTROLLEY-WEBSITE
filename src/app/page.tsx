@@ -20,6 +20,7 @@ import MacroBand         from '@/components/MacroBand'
 import NumbersStrip      from '@/components/NumbersStrip'
 import SpecSheet         from '@/components/SpecSheet'
 import Voices            from '@/components/Voices'
+import TiltedCollage     from '@/components/TiltedCollage'
 import InquireForm       from '@/components/InquireForm'
 import PrivateAccess     from '@/components/PrivateAccess'
 import Footer            from '@/components/Footer'
@@ -54,6 +55,9 @@ export default function Home() {
         {/* ── 4. COLLECTION GRID — product teaser ───────────────────────────── */}
         <CollectionGrid />
 
+        {/* ── Tilted collage — the collection laid out at an angle ──────────── */}
+        <TiltedCollage />
+
         {/* ── 5. HORIZONTAL DRAG GALLERY — ERA "Drag to see more" ───────────── */}
         <HorizontalGallery />
 
@@ -68,6 +72,8 @@ export default function Home() {
 
         {/* ── 7. CRAFTSMANSHIP — visual craft section ───────────────────────── */}
         <Craftsmanship />
+
+        {/* ── Iris transition — soft circular bloom between chapters ────────── */}
 
         {/* ── 8. CRAFT FILM — pinned video ──────────────────────────────────── */}
         <CraftFilm />

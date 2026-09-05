@@ -8,6 +8,7 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import LineReveal from './LineReveal'
 
 export default function FullBleedCTA() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -60,17 +61,15 @@ export default function FullBleedCTA() {
           Limited Availability
         </motion.p>
 
-        <motion.h2
+        <LineReveal
+          as="h2"
           className="font-serif font-light text-parchment leading-[1.05]"
           style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          delay={0.1}
         >
-          Wear something<br />
-          <em className="text-clay not-italic">made to outlast you.</em>
-        </motion.h2>
+          <span>Wear something</span>
+          <span className="text-clay">made to outlast you.</span>
+        </LineReveal>
 
         <motion.div
           className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4"

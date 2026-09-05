@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import GoldenDust from './GoldenDust'
+import LineReveal from './LineReveal'
 
 export default function PrivateAccess() {
   const [sent, setSent] = useState(false)
@@ -33,22 +34,15 @@ export default function PrivateAccess() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="label mb-8 text-parchment/30">Private Access</p>
-          <h2
+          <LineReveal
+            as="h2"
             className="font-serif font-light leading-[1.05] text-parchment mb-6"
             style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+            stagger={0.15}
           >
-            Be first to the rack.
-            <br />
-            <motion.span
-              className="text-clay inline-block"
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-            >
-              Before the doors open.
-            </motion.span>
-          </h2>
+            <span>Be first to the rack.</span>
+            <span className="text-clay">Before the doors open.</span>
+          </LineReveal>
           <p className="font-sans text-sm md:text-base text-smoke mb-14 max-w-sm mx-auto leading-relaxed">
             A private notification before each new drop — nothing else.
             Limited strictly to registered patrons.

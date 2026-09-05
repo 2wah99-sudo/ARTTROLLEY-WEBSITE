@@ -23,15 +23,14 @@ export default function Nav() {
   const [progress, setProgress] = useState(0)
   const navRef = useRef<HTMLElement>(null)
 
-  // Set the DOM `inert` property imperatively — passing it as a JSX prop
-  // through framer-motion's MotionComponent wrapper corrupts React's
-  // reconciliation (a boolean `inert` attribute isn't in React's recognized
-  // DOM property list, and toggling it via props caused a render crash).
-  // Setting it directly on the node sidesteps that entirely.
+  // Nav is visible and interactive from the very first frame now — no more
+  // waiting for the hero film to finish. `inert` stays cleared permanently;
+  // kept as an imperative DOM write (not a JSX prop) per the note below,
+  // in case a future gating need brings this back.
   useEffect(() => {
     const el = navRef.current as (HTMLElement & { inert: boolean }) | null
-    if (el) el.inert = !pastFilm
-  }, [pastFilm])
+    if (el) el.inert = false
+  }, [])
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -70,12 +69,9 @@ export default function Nav() {
       <motion.nav
         ref={navRef}
         initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: pastFilm ? 1 : 0, y: pastFilm ? 0 : -12 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        aria-hidden={!pastFilm}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-          pastFilm ? '' : 'pointer-events-none'
-        } ${
           scrolled
             ? 'bg-ink/95 backdrop-blur-sm border-b border-parchment/10'
             : 'bg-transparent border-b border-transparent'

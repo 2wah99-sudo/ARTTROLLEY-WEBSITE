@@ -7,3 +7,8 @@ out
 .claude
 remotion-hero
 *.log
+
+# Scratch/analysis output, not site content
+crv-out/
+public/concepts/
+public/patterns/

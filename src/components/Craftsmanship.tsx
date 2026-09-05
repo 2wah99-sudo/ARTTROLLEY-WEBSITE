@@ -166,12 +166,27 @@ export default function Craftsmanship() {
                 <ChapterWatermark n={c.n} />
 
                 <p className="label mb-5 text-gold/70 relative">{c.tag}</p>
-                <h3
-                  className="font-serif font-light text-parchment leading-[1.1] relative"
-                  style={{ fontSize: 'clamp(1.75rem, 3.5vw, 3rem)' }}
-                >
-                  {c.head}
-                </h3>
+                {/* Diagonal wipe reveal — a ghost duplicate of the headline
+                    sits underneath at low opacity while the real text sweeps
+                    in from behind a diagonal clip edge, so mid-transition you
+                    briefly see both the settling text and its own afterimage. */}
+                <div className="relative" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 3rem)' }}>
+                  <h3
+                    aria-hidden="true"
+                    className="font-serif font-light text-parchment/10 leading-[1.1] absolute inset-0 select-none"
+                  >
+                    {c.head}
+                  </h3>
+                  <motion.h3
+                    className="font-serif font-light text-parchment leading-[1.1] relative"
+                    initial={{ clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' }}
+                    whileInView={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
+                    viewport={{ once: true, margin: '-10% 0px' }}
+                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                  >
+                    {c.head}
+                  </motion.h3>
+                </div>
 
                 {/* Animated gold rule */}
                 <motion.div

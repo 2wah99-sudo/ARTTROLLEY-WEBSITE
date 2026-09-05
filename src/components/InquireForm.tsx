@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import GoldenDust from './GoldenDust'
+import LineReveal from './LineReveal'
 
 export default function InquireForm() {
   const [sent, setSent] = useState(false)
@@ -24,9 +25,11 @@ export default function InquireForm() {
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
           <p className="label mb-4">Private Appointment</p>
-          <h2 className="font-serif text-3xl md:text-5xl font-light leading-tight text-parchment mb-6">
-            Custom pieces, made to order.
-          </h2>
+          <LineReveal
+            as="h2"
+            className="font-serif text-3xl md:text-5xl font-light leading-tight text-parchment mb-6"
+            lines={['Custom pieces, made to order.']}
+          />
           <p className="font-sans text-base text-smoke mb-14 max-w-md mx-auto">
             We take a limited number of bespoke commissions each season —
             custom block motifs, dye depth, and sizing. Tell us what you

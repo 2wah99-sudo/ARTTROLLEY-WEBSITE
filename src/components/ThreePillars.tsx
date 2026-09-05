@@ -8,7 +8,8 @@
  * Mobile: single-column stacked.
  */
 
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion'
 
 function IconHeritageCraft() {
   return (
@@ -67,6 +68,56 @@ const PILLARS = [
   },
 ]
 
+// TiltCard — cursor-reactive 3D tilt + a spotlight that follows the pointer,
+// the signature "expensive-feeling" hover treatment on sites like Linear,
+// Stripe and Vercel. Rotation is spring-damped so it settles like a physical
+// object rather than snapping to the pointer; the spotlight is driven by the
+// same raw motion values via a CSS custom-property template so it repaints
+// as a GPU-composited gradient instead of a per-frame React re-render.
+function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const mouseX = useMotionValue(0.5) // 0..1 across card width
+  const mouseY = useMotionValue(0.5) // 0..1 across card height
+
+  const springConfig = { stiffness: 150, damping: 18, mass: 0.5 }
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [6, -6]), springConfig)
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-6, 6]), springConfig)
+
+  const spotlightX = useTransform(mouseX, (v) => `${v * 100}%`)
+  const spotlightY = useTransform(mouseY, (v) => `${v * 100}%`)
+  const spotlightBackground = useMotionTemplate`radial-gradient(480px circle at ${spotlightX} ${spotlightY}, rgba(201,168,76,0.10), transparent 65%)`
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
+    mouseX.set((e.clientX - rect.left) / rect.width)
+    mouseY.set((e.clientY - rect.top) / rect.height)
+  }
+
+  const handlePointerLeave = () => {
+    mouseX.set(0.5)
+    mouseY.set(0.5)
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
+      className={className}
+    >
+      {/* Spotlight — sits above the base fill, below the content */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: spotlightBackground }}
+      />
+      {children}
+    </motion.div>
+  )
+}
+
 const cardVariants = {
   hidden:  { opacity: 0, y: 36 },
   visible: (i: number) => ({
@@ -102,65 +153,68 @@ export default function ThreePillars() {
             whileInView="visible"
             viewport={{ once: true, margin: '-6% 0px' }}
             whileHover={{ y: -6, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
-            className="group relative bg-ink/40 p-10 md:p-14 flex flex-col gap-8
-                       cursor-default overflow-hidden"
+            className="group"
+            style={{ transformStyle: 'preserve-3d' }}
           >
-            {/* Gold sweep on hover — slides in from left */}
-            <span
-              className="absolute inset-y-0 left-0 w-px bg-gold/0
-                         group-hover:bg-gold/50 transition-colors duration-700"
-            />
-
-            {/* Number + icon row */}
-            <div className="flex items-start justify-between">
+            <TiltCard className="relative bg-ink/40 p-10 md:p-14 flex flex-col gap-8
+                       cursor-default overflow-hidden">
+              {/* Gold sweep on hover — slides in from left */}
               <span
-                className="font-serif text-5xl font-light text-parchment/12 leading-none select-none"
-                aria-hidden="true"
-              >
-                {p.num}
-              </span>
-              <span className="text-gold/50 group-hover:text-gold/80 transition-colors duration-500">
-                <p.Icon />
-              </span>
-            </div>
+                className="absolute inset-y-0 left-0 w-px bg-gold/0
+                           group-hover:bg-gold/50 transition-colors duration-700"
+              />
 
-            {/* Animated gold rule — draws in from left on scroll */}
-            <motion.div
-              className="h-px bg-gold/35"
-              style={{ transformOrigin: 'left' }}
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: i * 0.12 + 0.3 }}
-            />
+              {/* Number + icon row */}
+              <div className="relative flex items-start justify-between">
+                <span
+                  className="font-serif text-5xl font-light text-parchment/12 leading-none select-none"
+                  aria-hidden="true"
+                >
+                  {p.num}
+                </span>
+                <span className="text-gold/50 group-hover:text-gold/80 transition-colors duration-500">
+                  <p.Icon />
+                </span>
+              </div>
 
-            {/* Text */}
-            <div className="flex flex-col gap-3">
-              <p className="label text-gold/60 tracking-[0.22em]">{p.sub}</p>
-              <h3
-                className="font-serif font-light text-parchment leading-tight"
-                style={{ fontSize: 'clamp(1.5rem, 2.8vw, 2.2rem)' }}
-              >
-                {p.title}
-              </h3>
-            </div>
+              {/* Animated gold rule — draws in from left on scroll */}
+              <motion.div
+                className="relative h-px bg-gold/35"
+                style={{ transformOrigin: 'left' }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: i * 0.12 + 0.3 }}
+              />
 
-            <p className="font-sans font-light text-smoke/80 leading-relaxed text-[0.925rem]">
-              {p.body}
-            </p>
+              {/* Text */}
+              <div className="relative flex flex-col gap-3">
+                <p className="label text-gold/60 tracking-[0.22em]">{p.sub}</p>
+                <h3
+                  className="font-serif font-light text-parchment leading-tight"
+                  style={{ fontSize: 'clamp(1.5rem, 2.8vw, 2.2rem)' }}
+                >
+                  {p.title}
+                </h3>
+              </div>
 
-            {/* Bottom CTA arrow — fades in on hover */}
-            <div className="mt-auto pt-4">
-              <span
-                className="inline-flex items-center gap-2 label text-gold/0
-                           group-hover:text-gold/70 transition-colors duration-500"
-              >
-                Discover
-                <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                  <path d="M0 5h12M8 1l4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </div>
+              <p className="relative font-sans font-light text-smoke/80 leading-relaxed text-[0.925rem]">
+                {p.body}
+              </p>
+
+              {/* Bottom CTA arrow — fades in on hover */}
+              <div className="relative mt-auto pt-4">
+                <span
+                  className="inline-flex items-center gap-2 label text-gold/0
+                             group-hover:text-gold/70 transition-colors duration-500"
+                >
+                  Discover
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+                    <path d="M0 5h12M8 1l4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </TiltCard>
           </motion.div>
         ))}
       </div>

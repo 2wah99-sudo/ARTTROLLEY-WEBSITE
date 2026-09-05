@@ -100,14 +100,21 @@ export default function NumbersStrip() {
               </span>
             </div>
 
-            {/* Animated divider */}
-            <motion.div
-              className="mt-6 h-px bg-gold/40 group-hover:bg-gold"
-              initial={{ width: '1.5rem' }}
-              whileHover={{ width: '3rem' }}
-              style={{ width: '1.5rem' }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            />
+            {/* Hand-drawn swoosh — a single stroke that draws itself in under
+                the number, like a pen underlining the figure once it settles. */}
+            <svg width="72" height="20" viewBox="0 0 72 20" fill="none" className="mt-4" aria-hidden="true">
+              <motion.path
+                d="M4 6 C 20 16, 52 16, 68 5"
+                stroke="rgba(201,168,76,0.65)"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                fill="none"
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                viewport={{ once: true, margin: '-10% 0px' }}
+                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: i * 0.09 + 0.7 }}
+              />
+            </svg>
 
             <p className="mt-5 font-sans text-xs text-smoke leading-relaxed whitespace-pre-line max-w-[18ch] group-hover:text-parchment/70 transition-colors duration-500">
               {s.label}

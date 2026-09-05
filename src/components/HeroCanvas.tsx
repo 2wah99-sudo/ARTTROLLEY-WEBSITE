@@ -6,11 +6,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { useFrameSequence } from '@/lib/useFrameSequence'
 import { useScrubAudio } from '@/lib/useScrubAudio'
-import DreamDust from './DreamDust'
+import WordmarkStamp from './WordmarkStamp'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const PIN_VH = 350 // scroll distance in vh. Higher = more scroll needed, film advances slower per input — smooth, cinematic pace.
+const PIN_VH = 2000 // scroll distance in vh. Higher = more scroll needed, film advances slower per input — gives the decode pipeline more real time per frame to catch up before it needs it.
+
+// The confirmed opening shot (formerly frame_025 of 540) is now physically
+// frame_001 — every frame before it was deleted from public/frames/hero and
+// the sequence renumbered, so there is nothing before the start to remap
+// away from. START_PROGRESS stays as a named constant (0) so the coast/idle
+// code below reads the same either way.
+const START_FRAME_INDEX = 0
+const START_PROGRESS = 0
 
 // The film is a finished brand piece with its own title cards baked into
 // the pixels — "ORIGIN OF COLOUR", "THREAD BY THREAD", "HAND BLOCK",
@@ -46,6 +54,12 @@ export default function HeroCanvas() {
 
     let trigger: ScrollTrigger | undefined
 
+    // Identity when START_PROGRESS is 0 (frames before the confirmed starter
+    // no longer exist on disk, so there's nothing to remap away from) — kept
+    // as a function so a future START_PROGRESS > 0 would still be honoured
+    // without touching every call site below.
+    const remap = (p: number) => START_PROGRESS + p * (1 - START_PROGRESS)
+
     // Dream dissolve: fade to black over the last 6% of the hero so it hands
     // off to the atelier film as a short, punchy cross-fade instead of a
     // hard cut — or the long, draggy flat-black hold a wider window
@@ -69,12 +83,12 @@ export default function HeroCanvas() {
     // integrating real velocity made the travel distance (and so the
     // perceived duration) wildly inconsistent between a light nudge and a
     // hard flick. Any new scroll input kills it immediately, no fighting.
-    const COAST_DISTANCE = 0.06 // ~6% of the film — longer drift reads as real film momentum, not a mechanical stop
-    const COAST_DURATION = 4.0 // seconds — cinematic settle after lift
+    const COAST_DISTANCE = 0.11 // ~11% of the film — heavier drift still
+    const COAST_DURATION = 5.0 // seconds — longer, weightier settle after lift
     const startCoast = (fromProgress: number, velocity: number) => {
       if (Math.abs(velocity) < 0.00002) return // stopped without momentum — nothing to coast
       const direction = velocity > 0 ? 1 : -1
-      const target = Math.min(1, Math.max(0, fromProgress + direction * COAST_DISTANCE))
+      const target = Math.min(1, Math.max(START_PROGRESS, fromProgress + direction * COAST_DISTANCE))
       const proxy = { p: fromProgress }
       coastTweenRef.current = gsap.to(proxy, {
         p: target,
@@ -98,7 +112,7 @@ export default function HeroCanvas() {
     // fixed-ms threshold could at very high refresh rates.
     let frameScheduled = false
     const ctx = gsap.context(() => {
-      draw(canvas, 0)
+      draw(canvas, START_PROGRESS)
 
       trigger = ScrollTrigger.create({
         trigger: section,
@@ -118,6 +132,10 @@ export default function HeroCanvas() {
         // opt-in-on-idle layer — it never runs while real updates are
         // still arriving, so it can't reintroduce that old compounding bug.
         scrub: true,
+        // Recompute pin start/end on any ScrollTrigger.refresh() (font
+        // swaps, image loads, resize) rather than trusting cached pixel
+        // bounds from creation time — cheap, only runs on refresh not scroll.
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           scrollStartedRef.current = true
           coastTweenRef.current?.kill() // live input always wins over a coast in flight
@@ -134,16 +152,16 @@ export default function HeroCanvas() {
           if (!frameScheduled) {
             frameScheduled = true
             requestAnimationFrame(() => { frameScheduled = false })
-            draw(canvas, self.progress)
-            syncAudio(self.progress)
-            updateDissolve(self.progress)
+            draw(canvas, remap(self.progress))
+            syncAudio(remap(self.progress))
+            updateDissolve(remap(self.progress))
           }
 
           // No further onUpdate within 100ms means the scroll gesture has
           // actually ended (Lenis fires every frame while still gliding) —
           // hand off to the momentum coast from here.
           idleTimeoutRef.current = setTimeout(() => {
-            startCoast(self.progress, velocityRef.current)
+            startCoast(remap(self.progress), velocityRef.current)
           }, 100)
         },
         // Release this film's decoded bitmaps once it is off screen. Both
@@ -184,7 +202,7 @@ export default function HeroCanvas() {
   // Fade the frame-0 draw in the moment frame data is ready (avoids a flash
   // of the canvas background before the first decode lands).
   useEffect(() => {
-    if (!prefersReduced && ready && canvasRef.current) draw(canvasRef.current, 0)
+    if (!prefersReduced && ready && canvasRef.current) draw(canvasRef.current, START_PROGRESS)
   }, [ready, prefersReduced, draw])
 
   // Idle "breathing" loop — before the visitor has scrolled at all, the hero
@@ -223,13 +241,13 @@ export default function HeroCanvas() {
     breathingRef.current = true
     let raf = 0
     const start = performance.now()
-    const DURATION_MS = 3200
-    const AMPLITUDE = 0.025 // ~2.5% of the film — gentle opening drift
+    const DURATION_MS = 2400
+    const AMPLITUDE = 0.01 // ~1% of the film — subtler opening drift, down from 0.025
     const tick = (now: number) => {
       if (scrollStartedRef.current) { breathingRef.current = false; return }
       const t = Math.min(1, (now - start) / DURATION_MS)
       const eased = 1 - Math.pow(1 - t, 3)
-      draw(canvas, eased * AMPLITUDE)
+      draw(canvas, START_PROGRESS + eased * AMPLITUDE)
       if (t < 1) raf = requestAnimationFrame(tick)
       else breathingRef.current = false // settled — hand draw authority back to scroll/decode
     }
@@ -262,36 +280,49 @@ export default function HeroCanvas() {
       className="relative"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-ink">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          // No color filter here (CSS or ctx.filter) — both were tried to
+          // add contrast/saturation and both cost enough per-frame on a
+          // canvas that redraws continuously during scroll to read as
+          // stuttering/skipping. The footage plays with its own native
+          // grade now, same as it was shot.
+          style={{ willChange: 'transform' }}
+          aria-hidden="true"
+        />
 
         {/* ── Cinematic colour-grade layer ────────────────────────────────
-            Neutral warm toning — very subtle brightness lift around the
-            model, no colour cast. Elevates the footage without tinting it. */}
+            Neutral warm toning around the model. `overlay` (not `screen`)
+            so it doesn't lift the shadows on this low-key footage —
+            `screen` was washing the blacks toward grey, which is what read
+            as "faded". Overlay barely touches near-black pixels and only
+            lifts midtones/highlights. */}
         <div
           aria-hidden="true"
           className="absolute inset-0 z-[2] pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 70% 60% at 50% 75%, rgba(237,232,224,0.04) 0%, transparent 70%)',
-            mixBlendMode: 'screen',
+              'radial-gradient(ellipse 70% 60% at 50% 75%, rgba(237,232,224,0.10) 0%, transparent 70%)',
+            mixBlendMode: 'overlay',
           }}
         />
 
         {/* ── Ambient pulse ────────────────────────────────────────────────
             Barely-there breathing haze — gives the frozen first frame a
-            sense of depth and life without any colour tint.               */}
+            sense of depth and life without any colour tint. Same overlay
+            fix as above, for the same reason.                             */}
         <div
           aria-hidden="true"
           className="absolute pointer-events-none z-[3]"
           style={{
             inset: 0,
-            background: 'radial-gradient(ellipse 55% 40% at 50% 65%, rgba(237,232,224,0.03) 0%, transparent 65%)',
-            mixBlendMode: 'screen',
+            background: 'radial-gradient(ellipse 55% 40% at 50% 65%, rgba(237,232,224,0.08) 0%, transparent 65%)',
+            mixBlendMode: 'overlay',
             animation: 'hero-pulse 5s ease-in-out infinite',
           }}
         />
 
-        <DreamDust className="z-[4]" />
 
         {/* Vignette — frames the film, keeps its own edge-set captions
             readable without a second opaque scrim fighting the footage. */}
@@ -331,13 +362,27 @@ export default function HeroCanvas() {
             Est. 2024 · Bagru, Rajasthan
           </p>
 
-          {/* Main wordmark — fills the frame like rideradian's "EXR" */}
+          {/* Main wordmark — one whole, unbroken word at a single size.
+              (Breaking it into two chunks read as disjointed; a
+              dropped-cap "A" was tried and then equalised on request.)
+              font-wordmark (self-hosted Yeseva One) keeps it visually
+              distinct from the Fraunces serif used for every other
+              headline on the site. */}
           <h1
-            className="font-serif font-light text-parchment text-center leading-none tracking-widest"
-            style={{ fontSize: 'clamp(3.5rem, 12vw, 9.5rem)', letterSpacing: '0.12em' }}
+            className="font-wordmark font-normal text-parchment text-center px-4 flex items-baseline justify-center"
           >
-            ARTTROLLEY
+            <span
+              className="leading-none"
+              style={{ fontSize: 'clamp(2.2rem, 8vw, 6rem)', letterSpacing: '0.02em' }}
+            >
+              ARTTROLLEY
+            </span>
           </h1>
+
+          {/* Hallmark seal — the hand-block stamp glyph as a small hanging
+              mark beneath the wordmark, in place of a plain hairline rule.
+              Reads as a maker's seal, not decoration for its own sake. */}
+          <WordmarkStamp className="text-gold/60 w-7 h-7 md:w-9 md:h-9 mt-3 shrink-0" />
 
           {/* Hairline gold rule */}
           <div

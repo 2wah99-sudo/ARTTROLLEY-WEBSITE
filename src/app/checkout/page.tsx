@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useCart } from '@/context/CartContext'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import RedAmbientBackground from '@/components/RedAmbientBackground'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Address {
@@ -97,7 +98,12 @@ function buildEmailBody(
 function Steps({ current }: { current: number }) {
   const steps = ['Bag', 'Delivery', 'Review']
   return (
-    <div className="flex items-center gap-0 mb-12">
+    // overflow-x-auto + no-scrollbar: a safety net, not the primary layout —
+    // this fits within 375px comfortably, but sat within under 1px of the
+    // right edge there, which tips into real clipping on narrower phones
+    // (~360px Android). This way a slightly narrower screen scrolls instead
+    // of losing the "Review" step entirely.
+    <div className="flex items-center gap-0 mb-12 overflow-x-auto no-scrollbar pr-1">
       {steps.map((s, i) => (
         <div key={s} className="flex items-center">
           <div className="flex items-center gap-2">
@@ -229,12 +235,14 @@ export default function CheckoutPage() {
     return (
       <main className="bg-ink min-h-screen">
         <Nav />
-        <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-6 text-center">
-          <p className="font-serif text-2xl font-light text-parchment/60">Your bag is empty.</p>
-          <a href="/collection" className="label text-gold border-b border-gold/40 hover:border-gold pb-0.5 transition-colors duration-300">
-            Browse the Collection
-          </a>
-        </div>
+        <RedAmbientBackground>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-6 text-center">
+            <p className="font-serif text-2xl font-light text-parchment/60">Your bag is empty.</p>
+            <a href="/collection" className="label text-gold border-b border-gold/40 hover:border-gold pb-0.5 transition-colors duration-300">
+              Browse the Collection
+            </a>
+          </div>
+        </RedAmbientBackground>
         <Footer />
       </main>
     )
@@ -244,33 +252,35 @@ export default function CheckoutPage() {
     return (
       <main className="bg-ink min-h-screen">
         <Nav />
-        <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6 text-center">
-          <div className="w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 12l4 4 10-10" stroke="#C4A882" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+        <RedAmbientBackground>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6 text-center">
+            <div className="w-14 h-14 rounded-full border border-gold/40 flex items-center justify-center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12l4 4 10-10" stroke="#C4A882" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <h1 className="font-serif text-3xl font-light text-parchment mb-3">Order Received</h1>
+              <p className="font-sans text-sm text-parchment/50 max-w-[40ch] leading-relaxed">
+                Your order has been sent to our team. We'll confirm availability and share payment details within 24 hours.
+              </p>
+            </div>
+            <div className="border border-parchment/10 p-6 max-w-xs w-full text-left space-y-3">
+              <p className="label text-parchment/40 text-xs">Delivering to</p>
+              <p className="font-sans text-sm text-parchment">{address.fullName}</p>
+              <p className="font-sans text-xs text-parchment/50 leading-relaxed">
+                {address.addressLine1}{address.addressLine2 ? ', ' + address.addressLine2 : ''}<br/>
+                {address.city}, {address.state} — {address.pincode}
+              </p>
+              <p className="font-sans text-xs text-parchment/40">{address.mobile} · {address.email}</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+              <a href="/collection" className="label text-parchment/50 hover:text-gold transition-colors duration-300 border-b border-transparent hover:border-gold pb-0.5">
+                Continue Shopping
+              </a>
+            </div>
           </div>
-          <div>
-            <h1 className="font-serif text-3xl font-light text-parchment mb-3">Order Received</h1>
-            <p className="font-sans text-sm text-parchment/50 max-w-[40ch] leading-relaxed">
-              Your order has been sent to our team. We'll confirm availability and share payment details within 24 hours.
-            </p>
-          </div>
-          <div className="border border-parchment/10 p-6 max-w-xs w-full text-left space-y-3">
-            <p className="label text-parchment/40 text-xs">Delivering to</p>
-            <p className="font-sans text-sm text-parchment">{address.fullName}</p>
-            <p className="font-sans text-xs text-parchment/50 leading-relaxed">
-              {address.addressLine1}{address.addressLine2 ? ', ' + address.addressLine2 : ''}<br/>
-              {address.city}, {address.state} — {address.pincode}
-            </p>
-            <p className="font-sans text-xs text-parchment/40">{address.mobile} · {address.email}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-2">
-            <a href="/collection" className="label text-parchment/50 hover:text-gold transition-colors duration-300 border-b border-transparent hover:border-gold pb-0.5">
-              Continue Shopping
-            </a>
-          </div>
-        </div>
+        </RedAmbientBackground>
         <Footer />
       </main>
     )
@@ -280,6 +290,7 @@ export default function CheckoutPage() {
     <main className="bg-ink min-h-screen">
       <Nav />
 
+      <RedAmbientBackground>
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 pt-32 pb-24">
         {/* Back link */}
         <a href="/collection" className="label text-parchment/40 hover:text-parchment/70 transition-colors duration-300 mb-10 block">
@@ -590,6 +601,7 @@ export default function CheckoutPage() {
 
         </div>
       </div>
+      </RedAmbientBackground>
 
       <Footer />
     </main>

@@ -10,6 +10,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import LineReveal from './LineReveal'
 
 const STEPS = [
   {
@@ -67,13 +68,14 @@ export default function CraftProcess() {
             <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
               The Process
             </p>
-            <h2
+            <LineReveal
+              as="h2"
               className="font-serif font-light text-parchment leading-tight"
               style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)' }}
             >
-              Five steps,<br />
-              <em className="text-clay not-italic">no shortcuts.</em>
-            </h2>
+              <span>Five steps,</span>
+              <span className="text-clay">no shortcuts.</span>
+            </LineReveal>
           </div>
           <motion.p
             className="font-sans font-light text-smoke/60 md:max-w-[38ch] text-[0.925rem] leading-relaxed"
