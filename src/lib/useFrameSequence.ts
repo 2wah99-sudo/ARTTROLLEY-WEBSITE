@@ -74,12 +74,12 @@ function releaseFrame(f: Frame) {
 // the one decode that's actually on screen — tightened back down so the
 // currently-visible frame always wins the queue instead of waiting behind
 // dozens of frames the viewer hasn't reached yet.
-const MAX_INFLIGHT = 11; // concurrent decodes
-const AHEAD  = 45; // frames pre-decoded ahead of the playhead
-const BEHIND = 45; // frames held behind the playhead (for backward scrub)
-const KEEP   = 80; // resident decoded window
-const EVICT_AT = 95; // sweep only when the map grows past this
-const FETCH_CONCURRENCY = 11; // in-order blob fetches (network, not memory)
+const MAX_INFLIGHT = 8; // concurrent decodes
+const AHEAD  = 30; // frames pre-decoded ahead of the playhead
+const BEHIND = 20; // frames held behind the playhead (for backward scrub)
+const KEEP   = 60; // resident decoded window
+const EVICT_AT = 75; // sweep only when the map grows past this
+const FETCH_CONCURRENCY = 8; // in-order blob fetches (network, not memory)
 
 type Api = {
   draw: (canvas: HTMLCanvasElement | null, progress: number) => void;

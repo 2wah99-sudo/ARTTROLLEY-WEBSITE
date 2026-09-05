@@ -10,7 +10,7 @@ import WordmarkStamp from './WordmarkStamp'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const PIN_VH = 2000 // scroll distance in vh. Higher = more scroll needed, film advances slower per input — gives the decode pipeline more real time per frame to catch up before it needs it.
+const PIN_VH = 1000 // scroll distance in vh. Higher = more scroll needed, film advances slower per input — gives the decode pipeline more real time per frame to catch up before it needs it.
 
 // The confirmed opening shot (formerly frame_025 of 540) is now physically
 // frame_001 — every frame before it was deleted from public/frames/hero and

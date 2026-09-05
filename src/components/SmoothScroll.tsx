@@ -30,7 +30,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     // still smoothing — the earlier 0.050 read as heavy/laggy rather than
     // silky. wheelMultiplier 0.95 keeps raw scroll distance close to 1:1
     // since the higher lerp no longer needs distance compensation.
-    const lenis = new Lenis({ lerp: 0.006, smoothWheel: true, wheelMultiplier: 0.95 });
+    const lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.95 });
 
     lenis.on("scroll", ScrollTrigger.update);
     const raf = (time: number) => lenis.raf(time * 1000);
