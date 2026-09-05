@@ -25,7 +25,7 @@ export default function Voices() {
   const [active, setActive] = useState(0)
 
   return (
-    <section id="stories" className="relative py-36 md:py-52 px-6 md:px-16 border-t border-parchment/10 overflow-hidden">
+    <section id="stories" className="relative py-32 md:py-48 px-6 md:px-16 border-t border-parchment/10 overflow-hidden">
       {/* Atmospheric orbs */}
       <FloatingOrbs variant="mixed" count={3} />
 

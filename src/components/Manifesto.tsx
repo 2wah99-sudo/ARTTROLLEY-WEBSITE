@@ -103,7 +103,7 @@ export default function Manifesto() {
       ref={ref}
       id="manifesto"
       data-mouse-parallax
-      className="relative py-48 md:py-72 px-6 md:px-16 overflow-hidden"
+      className="relative py-44 md:py-64 px-6 md:px-16 overflow-hidden"
     >
       {/* Atmospheric floating orbs */}
       <FloatingOrbs variant="gold" count={3} />

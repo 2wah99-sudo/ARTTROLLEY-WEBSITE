@@ -12,7 +12,7 @@ export default function InquireForm() {
   return (
     <section
       id="inquire"
-      className="relative py-32 md:py-40 px-6 md:px-10 border-t border-parchment/10 overflow-hidden"
+      className="relative py-32 md:py-48 px-6 md:px-10 border-t border-parchment/10 overflow-hidden"
     >
       <FloatingOrbs variant="mixed" count={4} />
       <GoldenDust count={35} className="z-[1]" />

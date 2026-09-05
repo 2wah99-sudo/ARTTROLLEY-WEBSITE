@@ -112,7 +112,7 @@ export default function HorizontalGallery() {
   }, [])
 
   return (
-    <section className="relative py-24 md:py-36 overflow-hidden">
+    <section className="relative py-32 md:py-48 overflow-hidden">
       {/* Header row */}
       <div className="px-6 md:px-16 flex items-end justify-between mb-12">
         <motion.div

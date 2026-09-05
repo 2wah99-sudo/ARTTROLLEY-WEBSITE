@@ -105,7 +105,7 @@ function ChapterWatermark({ n }: { n: string }) {
 
 export default function Craftsmanship() {
   return (
-    <section id="craft" className="relative py-32 md:py-44 border-t border-parchment/10 overflow-hidden">
+    <section id="craft" className="relative py-32 md:py-48 border-t border-parchment/10 overflow-hidden">
       {/* Atmospheric background orbs */}
       <FloatingOrbs variant="crimson" count={4} />
 

@@ -35,7 +35,7 @@ export default function SpecSheet() {
   return (
     <section
       id="fabric-dna"
-      className="relative py-32 md:py-40 px-6 md:px-10 border-t border-parchment/10 overflow-hidden"
+      className="relative py-32 md:py-48 px-6 md:px-10 border-t border-parchment/10 overflow-hidden"
     >
       <FloatingOrbs variant="gold" count={3} />
 
