@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Fraunces, DM_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import SmoothScroll from '@/components/SmoothScroll'
 import Preloader from '@/components/Preloader'
@@ -9,21 +8,36 @@ import { CartProvider } from '@/context/CartContext'
 import CartDrawer from '@/components/CartDrawer'
 import './globals.css'
 
-const fraunces = Fraunces({
-  subsets: ['latin'],
+// Self-hosted (next/font/local), same reasoning as Yeseva One below: this
+// sandbox's Node process can't complete a TLS handshake to
+// fonts.googleapis.com, so next/font/google silently falls back to a
+// metrics-only placeholder in every local build (dev AND production/static
+// export — confirmed by testing both). Vercel's build servers don't have
+// that restriction, so the real font loaded there — meaning the site's
+// headline/body typography was genuinely rendering differently between
+// local and deployed this whole session. Self-hosting removes the runtime
+// fetch entirely, so local and deployed now render identically.
+const fraunces = localFont({
+  src: [
+    { path: './fonts/Fraunces-Normal-300.ttf', weight: '300', style: 'normal' },
+    { path: './fonts/Fraunces-Normal-400.ttf', weight: '400', style: 'normal' },
+    { path: './fonts/Fraunces-Normal-500.ttf', weight: '500', style: 'normal' },
+    { path: './fonts/Fraunces-Italic-300.ttf', weight: '300', style: 'italic' },
+    { path: './fonts/Fraunces-Italic-400.ttf', weight: '400', style: 'italic' },
+    { path: './fonts/Fraunces-Italic-500.ttf', weight: '500', style: 'italic' },
+  ],
   variable: '--font-fraunces',
   display: 'swap',
-  weight: ['300', '400', '500'],
-  // italic added for the hero/atelier storyline overlay's poetic line —
-  // otherwise identical to the site's existing serif everywhere else.
-  style: ['normal', 'italic'],
 })
 
-const dmSans = DM_Sans({
-  subsets: ['latin'],
+const dmSans = localFont({
+  src: [
+    { path: './fonts/DMSans-300.ttf', weight: '300', style: 'normal' },
+    { path: './fonts/DMSans-400.ttf', weight: '400', style: 'normal' },
+    { path: './fonts/DMSans-500.ttf', weight: '500', style: 'normal' },
+  ],
   variable: '--font-dm-sans',
   display: 'swap',
-  weight: ['300', '400', '500'],
 })
 
 // Reserved for the hero wordmark only. Closest free equivalent to "Casta"
