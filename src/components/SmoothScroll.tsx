@@ -7,6 +7,13 @@ import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Throttle ScrollTrigger's internal scroll-check loop — per gsap-scrolltrigger
+// skill: limitCallbacks prevents redundant onUpdate calls within the same
+// animation frame; syncInterval:15 caps the internal sync to ~67 checks/sec
+// instead of every native scroll event, dramatically reducing draw() call
+// frequency without any perceptible loss of responsiveness.
+ScrollTrigger.config({ limitCallbacks: true, syncInterval: 15 });
+
 /**
  * Lenis smooth scroll wired into GSAP's ticker so ScrollTrigger and Lenis
  * share one clock — the standard recipe for buttery scrub animations.
@@ -26,11 +33,14 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     // lerp: 0.050 — rideradian-tier silk. Each wheel tick glides to rest
     // over ~20 frames (~320ms), giving the physical weight that makes
     // premium automotive/luxury portfolio sites feel like they move through oil.
-    // Production-tuned: 0.09 lerp stays responsive to scroll intent while
-    // still smoothing — the earlier 0.050 read as heavy/laggy rather than
-    // silky. wheelMultiplier 0.95 keeps raw scroll distance close to 1:1
-    // since the higher lerp no longer needs distance compensation.
-    const lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.95 });
+    // 0.068 — halfway between the previous 0.09 (responsive but light) and
+    // the 0.065 "liquid" sweet spot. Gives each wheel tick a ~14-frame
+    // glide to rest (~225ms at 60Hz) — the "weight" the user asked for —
+    // without tipping into the 0.050 territory that previously read as
+    // genuinely laggy rather than heavy. wheelMultiplier 0.90 shaves a
+    // little raw distance so the extra glide time doesn't overshoot on a
+    // single hard flick.
+    const lenis = new Lenis({ lerp: 0.062, smoothWheel: true, wheelMultiplier: 0.88 });
 
     lenis.on("scroll", ScrollTrigger.update);
     const raf = (time: number) => lenis.raf(time * 1000);
