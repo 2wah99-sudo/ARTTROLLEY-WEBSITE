@@ -43,6 +43,7 @@ const FETCH_CONCURRENCY = 16;
 type Api = {
   draw: (canvas: HTMLCanvasElement | null, progress: number) => void;
   trim: () => void;
+  getLoadedFraction: () => number;
 };
 
 export function useFrameSequence(name: string) {
@@ -56,6 +57,13 @@ export function useFrameSequence(name: string) {
   const lastTargetIdx= useRef<number>(-1);
   const dirRef       = useRef<1 | -1>(1);
   const [ready, setReady] = useState(false);
+  // Highest contiguous frame index fetched from disk/CDN so far. On
+  // localhost this races to `count-1` near-instantly; on a real network
+  // (production) it climbs gradually. Exposed so the caller can clamp
+  // scroll-driven progress to what has actually arrived — without this,
+  // a fast scroll on a slow connection outruns the buffer and the canvas
+  // reads as "stuck" holding the last available frame indefinitely.
+  const loadedUpToRef = useRef(0);
 
   useEffect(() => {
     let alive = true;
@@ -108,8 +116,19 @@ export function useFrameSequence(name: string) {
         }
       }));
 
+      loadedUpToRef.current = EAGER - 1;
+
       // Then fetch remaining blobs in order (no decode — decode window handles that).
+      // Track contiguous progress: since workers pull in round-robin order,
+      // the highest index that is safe to call "loaded" is the run of
+      // consecutively-filled slots from EAGER onward, not just the max index
+      // seen (workers finish out of order).
       let next = EAGER;
+      const advanceLoadedMark = () => {
+        let i = loadedUpToRef.current + 1;
+        while (i < m.count && blobs.current[i]) i++;
+        loadedUpToRef.current = i - 1;
+      };
       const worker = async () => {
         while (alive) {
           const i = next++;
@@ -118,6 +137,7 @@ export function useFrameSequence(name: string) {
             const b = await fetch(url(i)).then((r) => r.blob());
             if (!alive) return;
             blobs.current[i] = b;
+            advanceLoadedMark();
           } catch { /* stays null; film holds on miss */ }
         }
       };
@@ -239,8 +259,27 @@ export function useFrameSequence(name: string) {
       }
     }
 
-    apiRef.current = { draw, trim };
+    // getLoadedFraction: 0..1, how much of the film is safely scrubbable
+    // right now (contiguous from the start). The caller clamps display
+    // progress to this so a fast scroll on a slow connection catches up
+    // gracefully instead of freezing on the last available frame with no
+    // visible explanation. Defined here (not at hook-body scope) so it
+    // shares apiRef's stable identity across renders — a fresh closure
+    // every render would thrash any effect that depends on it.
+    function getLoadedFraction() {
+      return countRef.current > 0
+        ? Math.min(1, (loadedUpToRef.current + 1) / countRef.current)
+        : 0;
+    }
+
+    apiRef.current = { draw, trim, getLoadedFraction };
   }
 
-  return { ready, draw: apiRef.current.draw, trim: apiRef.current.trim, lastProgress };
+  return {
+    ready,
+    draw: apiRef.current.draw,
+    trim: apiRef.current.trim,
+    lastProgress,
+    getLoadedFraction: apiRef.current.getLoadedFraction,
+  };
 }

@@ -19,7 +19,7 @@ export default function HeroCanvas() {
   const canvasRef   = useRef<HTMLCanvasElement>(null)
   const cueRef      = useRef<HTMLDivElement>(null)
   const dissolveRef = useRef<HTMLDivElement>(null)
-  const { ready, draw, trim } = useFrameSequence('hero')
+  const { ready, draw, trim, getLoadedFraction } = useFrameSequence('hero')
   const { sync: syncAudio, muted, toggleMuted } = useScrubAudio('/audio/hero.mp3')
   const scrollStartedRef  = useRef(false)
   const lastProgressRef   = useRef(0)
@@ -45,6 +45,16 @@ export default function HeroCanvas() {
     let trigger: ScrollTrigger | undefined
     const remap = (p: number) => START_PROGRESS + p * (1 - START_PROGRESS)
 
+    // Clamp displayed progress to what has actually downloaded. On a real
+    // network (production), a fast scroll can outrun the frame buffer —
+    // without this, the canvas freezes hard on the last available frame
+    // with no indication why. Clamping means it instead tracks a little
+    // behind the raw scroll position and catches up as more frames land —
+    // reads as "the film is still arriving," not "the site is broken."
+    // A small look-ahead margin (0.01 ≈ 6-7 frames) avoids clamping so
+    // tightly that it visibly stair-steps on a merely-adequate connection.
+    const clampToBuffer = (p: number) => Math.min(p, getLoadedFraction() + 0.01)
+
     const updateDissolve = (p: number) => {
       if (!dissolveRef.current) return
       const raw = p > 0.94 ? (p - 0.94) / 0.06 : 0
@@ -56,7 +66,7 @@ export default function HeroCanvas() {
     const startCoast = (fromProgress: number, velocity: number) => {
       if (Math.abs(velocity) < 0.00002) return
       const direction = velocity > 0 ? 1 : -1
-      const target = Math.min(1, Math.max(START_PROGRESS, fromProgress + direction * COAST_DISTANCE))
+      const target = Math.min(1, getLoadedFraction() + 0.01, Math.max(START_PROGRESS, fromProgress + direction * COAST_DISTANCE))
       const proxy = { p: fromProgress }
       coastTweenRef.current = gsap.to(proxy, {
         p: target,
@@ -92,7 +102,7 @@ export default function HeroCanvas() {
           lastProgressRef.current = self.progress
           lastUpdateTimeRef.current = now
 
-          const p = remap(self.progress)
+          const p = clampToBuffer(remap(self.progress))
           draw(canvas, p)
           syncAudio(p)
           updateDissolve(p)
@@ -124,7 +134,7 @@ export default function HeroCanvas() {
       clearTimeout(idleTimeoutRef.current)
       ctx.revert()
     }
-  }, [prefersReduced, draw, trim, ready, syncAudio])
+  }, [prefersReduced, draw, trim, ready, syncAudio, getLoadedFraction])
 
   useEffect(() => {
     if (!prefersReduced && ready && canvasRef.current) draw(canvasRef.current, START_PROGRESS)
