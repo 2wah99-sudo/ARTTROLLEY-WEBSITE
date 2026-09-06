@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 import AmbientFlowVideo from './AmbientFlowVideo'
 
 /**
@@ -14,14 +14,21 @@ import AmbientFlowVideo from './AmbientFlowVideo'
  * can't produce.
  */
 export default function AmbientBackground({ children }: { children: ReactNode }) {
+  // Passed down to AmbientFlowVideo so its scroll-driven parallax scopes to
+  // THIS section's own scroll range (Manifesto through Footer) instead of
+  // the whole document from pixel 0 — see AmbientFlowVideo.tsx for why that
+  // was a real, measured cost during hero scrolling despite this video not
+  // even being visible yet at that point.
+  const rangeRef = useRef<HTMLDivElement>(null)
+
   return (
-    <div className="relative">
+    <div className="relative" ref={rangeRef}>
       {/* Sticky canvas — stays pinned while children scroll over it */}
       <div className="sticky top-0 h-screen w-full -mb-[100vh] z-0 bg-ink">
         {/* AI-generated flowing block-print fabric loop — the actual
             "parallax background video" ask, muted/looped/screen-blended
             above the shader, below the dimming overlay so it stays subtle. */}
-        <AmbientFlowVideo />
+        <AmbientFlowVideo rangeRef={rangeRef} />
 
         {/* Ink overlay — raised again (was /55) alongside dimming the video
             itself; the two together are what actually fixes legibility —

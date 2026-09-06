@@ -25,7 +25,7 @@ export default function EditorialMoment() {
       <motion.div style={{ y }} className="absolute inset-0 scale-110">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/flow-assets/model-courtyard-kurti-2k.png"
+          src="/flow-assets/model-courtyard-kurti-2k.webp"
           alt="Arttrolley kurti, worn in a sunlit Rajasthan courtyard"
           className="w-full h-full object-cover"
         />

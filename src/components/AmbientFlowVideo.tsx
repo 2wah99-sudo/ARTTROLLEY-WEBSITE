@@ -12,14 +12,31 @@
  * itself can't move since it's pinned, but the oversized video inside it
  * can, which is what actually reads as continuous downward-flowing motion
  * as you scroll rather than a loop stuck in one place.
+ *
+ * `rangeRef` — passed down from AmbientBackground. Its `useScroll()` used
+ * to have no target at all, meaning it tracked the ENTIRE document's scroll
+ * progress from pixel 0. On this page that includes the hero's 1000vh pin —
+ * so this component was recomputing a real DOM transform on every single
+ * scroll tick of hero scrolling, despite not even being visible yet, and
+ * despite the resulting 0→~25%-of-total progress being far too small a
+ * slice of its [0,1]→['0%','-38%'] mapping to produce the intended visible
+ * "continuous flow" during its own section anyway. Scoping to the ambient
+ * section's own container fixes both: less always-on work, and the
+ * intended travel distance now actually happens across its own section.
  */
 
-import { useRef } from 'react'
+import { RefObject } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
-export default function AmbientFlowVideo() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll()
+export default function AmbientFlowVideo({
+  rangeRef,
+}: {
+  rangeRef: RefObject<HTMLDivElement>
+}) {
+  const { scrollYProgress } = useScroll({
+    target: rangeRef,
+    offset: ['start start', 'end end'],
+  })
   // The video is 160% of the container's height, so it has 60% of headroom
   // to travel through. Translating it from 0 up to that full headroom as
   // scrollYProgress goes 0→1 means new footage keeps entering from the
@@ -28,7 +45,7 @@ export default function AmbientFlowVideo() {
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '-38%'])
 
   return (
-    <div ref={ref} className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden">
       <motion.video
         aria-hidden="true"
         className="absolute left-0 w-full object-cover pointer-events-none"

@@ -97,7 +97,7 @@ export const metadata: Metadata = {
       'Handcrafted block-print kurtis and embroidered garments from Bagru, Rajasthan. Natural dyes, hand-carved teak blocks, slow fashion.',
     images: [
       {
-        url: '/flow-assets/model-courtyard-kurti-2k.png',
+        url: '/flow-assets/model-courtyard-kurti-2k.webp',
         width: 2704,
         height: 3380,
         alt: 'Arttrolley — hand block-print kurti in a Rajasthan courtyard',
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Arttrolley — Heritage, thread by thread.',
     description: 'Handcrafted block-print kurtis from Bagru, Rajasthan. Natural dyes, 20-piece curated collection.',
-    images: ['/flow-assets/model-courtyard-kurti-2k.png'],
+    images: ['/flow-assets/model-courtyard-kurti-2k.webp'],
   },
   robots: {
     index: true,

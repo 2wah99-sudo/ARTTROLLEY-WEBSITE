@@ -12,7 +12,7 @@ const CHAPTERS = [
     tag: 'The Block',
     head: 'Carved by hand, four generations deep.',
     body: 'G47 works with a single family of block-carvers in Bagru, whose workshop has cut printing blocks since 1932. Each teak block takes upward of eleven days to carve, and is retired after roughly four hundred impressions — worn grain changes the print, and we would rather retire a block than let the motif drift.',
-    img: '/flow-assets/craft-block-carving-2k.png',
+    img: '/flow-assets/craft-block-carving-2k.webp',
     reverse: false,
   },
   {
@@ -20,7 +20,7 @@ const CHAPTERS = [
     tag: 'The Dye',
     head: 'Mixed the week it is used, never before.',
     body: 'Indigo fermented in clay vats, rust drawn from iron filings and jaggery, pomegranate rind boiled down for the ochre. Nothing is synthetic, and no two garments carry the exact same depth of colour — the dye knows the weather better than we do.',
-    img: '/flow-assets/craft-indigo-dye-2k.png',
+    img: '/flow-assets/craft-indigo-dye-2k.webp',
     reverse: true,
   },
   {
@@ -28,7 +28,7 @@ const CHAPTERS = [
     tag: 'The Stitch',
     head: 'Eleven pairs of hands, one garment.',
     body: 'This is, by design, a slow way to make clothing. A single kurti passes through eleven pairs of hands before it reaches you — printing, dyeing, drying, embroidery, finishing. We have made peace with what that costs in speed, in exchange for what it returns in permanence.',
-    img: '/flow-assets/craft-embroidery-2k.png',
+    img: '/flow-assets/craft-embroidery-2k.webp',
     reverse: false,
   },
 ]

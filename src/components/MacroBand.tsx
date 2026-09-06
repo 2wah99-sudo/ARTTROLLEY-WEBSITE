@@ -5,11 +5,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 
 // Google Flow / Nano Banana 2 craft photography — no external stock images
 const MACRO_FRAMES = [
-  '/flow-assets/macro-block-impression-2k.png',
-  '/flow-assets/macro-dye-lift-2k.png',
-  '/flow-assets/macro-embroidery-frame-2k.png',
-  '/flow-assets/macro-mirror-work-2k.png',
-  '/flow-assets/macro-boutique-mirror-2k.png',
+  '/flow-assets/macro-block-impression-2k.webp',
+  '/flow-assets/macro-dye-lift-2k.webp',
+  '/flow-assets/macro-embroidery-frame-2k.webp',
+  '/flow-assets/macro-mirror-work-2k.webp',
+  '/flow-assets/macro-boutique-mirror-2k.webp',
 ]
 
 const MARQUEE = 'HAND BLOCK · NATURAL DYE · ARTISAN CRAFT · BAGRU, RAJASTHAN · HERITAGE SINCE 1932 · '
