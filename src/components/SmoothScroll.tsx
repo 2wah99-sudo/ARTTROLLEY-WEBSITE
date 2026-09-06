@@ -7,19 +7,23 @@ import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Throttle ScrollTrigger's internal scroll-check loop — per gsap-scrolltrigger
-// skill: limitCallbacks prevents redundant onUpdate calls within the same
-// animation frame; syncInterval:15 caps the internal sync to ~67 checks/sec
-// instead of every native scroll event, dramatically reducing draw() call
-// frequency without any perceptible loss of responsiveness.
-ScrollTrigger.config({ limitCallbacks: true, syncInterval: 15 });
-
 /**
  * Lenis smooth scroll wired into GSAP's ticker so ScrollTrigger and Lenis
  * share one clock — the standard recipe for buttery scrub animations.
  */
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
+    // Throttle ScrollTrigger's internal scroll-check loop — per
+    // gsap-scrolltrigger skill: limitCallbacks prevents redundant onUpdate
+    // calls within the same animation frame; syncInterval:15 caps the
+    // internal sync to ~67 checks/sec instead of every native scroll event.
+    // MUST run inside this client-only effect, not at module scope — at
+    // module scope it executes during Next.js's server-side prerendering
+    // (no window/requestAnimationFrame in that Node environment), which
+    // armed a setInterval that later fired `requestAnimationFrame is not
+    // defined` and crashed the build workers.
+    ScrollTrigger.config({ limitCallbacks: true, syncInterval: 15 });
+
     // lerp: 0.12 — time constant ~7 frames (115ms) instead of 11 frames.
     // Enough smoothing for the premium feel, fast enough that a quick fling
     // actually reaches the target rather than stalling mid-film.
