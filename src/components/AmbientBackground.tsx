@@ -30,16 +30,12 @@ export default function AmbientBackground({ children }: { children: ReactNode })
             above the shader, below the dimming overlay so it stays subtle. */}
         <AmbientFlowVideo rangeRef={rangeRef} />
 
-        {/* Ink overlay — raised again (was /55) alongside dimming the video
-            itself; the two together are what actually fixes legibility —
-            one dimmer layer alone still let bright fabric passages compete
-            with parchment-coloured headlines and body copy in Manifesto,
-            Craft, and everything else this background sits behind.
-            Bracket syntax, not `/72` — Tailwind's default opacity scale
-            only has fixed steps (…70, 75, 80…); a bare `/72` silently
-            compiles to NO background at all instead of erroring, which is
-            exactly what was quietly defeating this fix. */}
-        <div className="absolute inset-0 z-[2] bg-ink/[0.72] pointer-events-none" />
+        {/* Ink overlay — pulled way back (was 0.72, effectively blacking
+            the clip out) now that the video itself carries its real color
+            again (see AmbientFlowVideo). Just enough dimming left for text
+            legibility, not enough to read as "black background with a
+            video-shaped shadow on it." */}
+        <div className="absolute inset-0 z-[2] bg-ink/[0.25] pointer-events-none" />
       </div>
       <div className="relative z-[2]">{children}</div>
     </div>

@@ -63,6 +63,7 @@ export default function CraftProcess() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+          style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
         >
           <div>
             <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
@@ -74,7 +75,10 @@ export default function CraftProcess() {
               style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)' }}
             >
               <span>Five steps,</span>
-              <span className="text-clay">no shortcuts.</span>
+              {/* Extra-strong shadow: clay (#B5622A) is close in hue to the
+                  fabric background's rust tones, so this specific span needs
+                  more separation than the section-wide shadow gives it. */}
+              <span className="text-clay" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 26px rgba(0,0,0,0.9)' }}>no shortcuts.</span>
             </LineReveal>
           </div>
           <motion.p
@@ -92,7 +96,10 @@ export default function CraftProcess() {
       </div>
 
       {/* ERA-style tab bar — horizontal labels */}
-      <div className="px-6 md:px-16 border-b border-parchment/10 mb-0">
+      <div
+        className="px-6 md:px-16 border-b border-parchment/10 mb-0"
+        style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)' }}
+      >
         <div className="flex items-end gap-0 overflow-x-auto no-scrollbar">
           {STEPS.map((step, i) => (
             <button
@@ -101,7 +108,7 @@ export default function CraftProcess() {
               onClick={() => setActive(i)}
               className={`relative shrink-0 py-5 pr-8 md:pr-12 text-left transition-colors duration-400
                          focus-visible:outline-none group
-                         ${i === active ? 'text-parchment' : 'text-parchment/30 hover:text-parchment/60'}`}
+                         ${i === active ? 'text-parchment' : 'text-parchment/50 hover:text-parchment/75'}`}
             >
               {/* Step number */}
               <span
@@ -143,7 +150,10 @@ export default function CraftProcess() {
           style={{ minHeight: '520px' }}
         >
           {/* Left — text panel */}
-          <div className="px-6 md:px-16 py-14 md:py-20 flex flex-col justify-between">
+          <div
+            className="px-6 md:px-16 py-14 md:py-20 flex flex-col justify-between"
+            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
+          >
             <div>
               <p className="label text-gold/50 mb-6" style={{ letterSpacing: '0.22em', fontSize: '0.65rem' }}>
                 {STEPS[active].sub}

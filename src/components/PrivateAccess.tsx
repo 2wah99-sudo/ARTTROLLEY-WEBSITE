@@ -26,14 +26,19 @@ export default function PrivateAccess() {
         PRIVATE
       </motion.span>
 
-      <div className="relative max-w-[1000px] mx-auto text-center z-[2]">
+      {/* text-shadow inherits to heading/body/form below — sits over
+          AmbientBackground's fabric loop, no shadow was applied anywhere. */}
+      <div
+        className="relative max-w-[1000px] mx-auto text-center z-[2]"
+        style={{ textShadow: '0 3px 18px rgba(0,0,0,0.8), 0 1px 5px rgba(0,0,0,0.9)' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 36 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="label mb-8 text-parchment/30">Private Access</p>
+          <p className="label mb-8 text-gold/70">Private Access</p>
           <LineReveal
             as="h2"
             className="font-serif font-light leading-[1.05] text-parchment mb-6"
@@ -41,9 +46,9 @@ export default function PrivateAccess() {
             stagger={0.15}
           >
             <span>Be first to the rack.</span>
-            <span className="text-clay">Before the doors open.</span>
+            <span className="text-clay" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 26px rgba(0,0,0,0.9)' }}>Before the doors open.</span>
           </LineReveal>
-          <p className="font-sans text-sm md:text-base text-smoke mb-14 max-w-sm mx-auto leading-relaxed">
+          <p className="font-sans text-sm md:text-base text-parchment/80 mb-14 max-w-sm mx-auto leading-relaxed">
             A private notification before each new drop — nothing else.
             Limited strictly to registered patrons.
           </p>

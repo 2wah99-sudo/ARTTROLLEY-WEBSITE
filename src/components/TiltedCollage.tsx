@@ -31,6 +31,7 @@ export default function TiltedCollage() {
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 md:mb-24"
+          style={{ textShadow: '0 4px 22px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' }}
         >
           <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
             At a Glance
@@ -40,7 +41,7 @@ export default function TiltedCollage() {
             style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)' }}
           >
             The collection,<br />
-            <em className="text-clay not-italic">laid out by hand.</em>
+            <em className="text-clay not-italic" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 26px rgba(0,0,0,0.9)' }}>laid out by hand.</em>
           </h2>
         </motion.div>
 

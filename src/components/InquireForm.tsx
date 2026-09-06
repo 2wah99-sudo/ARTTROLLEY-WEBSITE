@@ -24,13 +24,21 @@ export default function InquireForm() {
           viewport={{ once: true }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="label mb-4">Private Appointment</p>
+          {/* text-shadow throughout this section — it sits over the
+              AmbientFlowVideo fabric loop (restored to full color), and its
+              light cream floral passages were blending straight into
+              parchment/smoke-colored text and form labels. */}
+          <p className="label mb-4 text-gold/80" style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}>Private Appointment</p>
           <LineReveal
             as="h2"
             className="font-serif text-3xl md:text-5xl font-light leading-tight text-parchment mb-6"
             lines={['Custom pieces, made to order.']}
+            style={{ textShadow: '0 4px 22px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.85)' }}
           />
-          <p className="font-sans text-base text-smoke mb-14 max-w-md mx-auto">
+          <p
+            className="font-sans text-base text-parchment/80 mb-14 max-w-md mx-auto"
+            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.75), 0 1px 4px rgba(0,0,0,0.9)' }}
+          >
             We take a limited number of bespoke commissions each season —
             custom block motifs, dye depth, and sizing. Tell us what you
             have in mind.
@@ -83,7 +91,7 @@ export default function InquireForm() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <label className="block group">
-                  <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300">Name</span>
+                  <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.85)' }}>Name</span>
                   <input
                     required
                     type="text"
@@ -94,7 +102,7 @@ export default function InquireForm() {
                   />
                 </label>
                 <label className="block group">
-                  <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300">Email</span>
+                  <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.85)' }}>Email</span>
                   <input
                     required
                     type="email"
@@ -106,7 +114,7 @@ export default function InquireForm() {
                 </label>
               </div>
               <label className="block group">
-                <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300">
+                <span className="label block mb-2 group-focus-within:text-gold transition-colors duration-300" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.85)' }}>
                   Tell us about the piece
                 </span>
                 <textarea

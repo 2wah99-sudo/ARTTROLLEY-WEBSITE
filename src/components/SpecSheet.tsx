@@ -39,7 +39,13 @@ export default function SpecSheet() {
     >
       <FloatingOrbs variant="gold" count={3} />
 
-      <div className="max-w-[1600px] mx-auto relative z-[2]">
+      {/* text-shadow inherits to the header + every DNA card below — this
+          section sits over AmbientBackground's fabric loop and had no
+          shadow anywhere, so labels/values/details all blended into it. */}
+      <div
+        className="max-w-[1600px] mx-auto relative z-[2]"
+        style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}

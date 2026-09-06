@@ -139,8 +139,12 @@ export default function CollectionGrid() {
       id="collection"
       className="relative py-32 md:py-48 px-6 md:px-16 border-t border-parchment/8"
     >
-      {/* Section header — ERA style */}
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-20">
+      {/* Section header — ERA style. text-shadow inherits below: this header
+          sits over AmbientBackground's fabric loop and had no shadow. */}
+      <div
+        className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-20"
+        style={{ textShadow: '0 4px 22px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -156,7 +160,7 @@ export default function CollectionGrid() {
             style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)' }}
           >
             <span>{PRODUCTS.length} pieces.</span>
-            <span className="text-clay">No repeats.</span>
+            <span className="text-clay" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 26px rgba(0,0,0,0.9)' }}>No repeats.</span>
           </LineReveal>
         </motion.div>
 

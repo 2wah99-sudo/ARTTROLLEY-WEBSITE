@@ -191,9 +191,32 @@ export default function HeroCanvas() {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ willChange: 'transform' }}
+          style={{
+            willChange: 'transform',
+            // Cinematic grade on the raw frame itself — punchier contrast and
+            // saturation than the source footage, plus a hair of warmth, is
+            // what separates "video on a page" from a graded film. Kept
+            // subtle: too much saturate() crushes the block-print detail
+            // the whole shoot exists to sell.
+            filter: 'contrast(1.1) saturate(1.18) brightness(0.97) sepia(0.06)',
+          }}
           aria-hidden="true"
         />
+
+        {/* Teal-shadow / amber-highlight split tone — the actual "premium
+            film" color-grade move: push shadows cool, highlights warm, so
+            the image reads as graded rather than flat-lit footage. */}
+        <div aria-hidden="true" className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background: 'linear-gradient(160deg, rgba(10,28,32,0.30) 0%, transparent 42%, transparent 58%, rgba(198,142,72,0.16) 100%)',
+            mixBlendMode: 'color-dodge',
+            opacity: 0.35,
+          }} />
+        <div aria-hidden="true" className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 90% 80% at 50% 100%, rgba(8,20,24,0.45) 0%, transparent 55%)',
+            mixBlendMode: 'multiply',
+          }} />
 
         {/* Cinematic warm overlay */}
         <div aria-hidden="true" className="absolute inset-0 z-[2] pointer-events-none"
@@ -202,6 +225,16 @@ export default function HeroCanvas() {
         {/* Ambient pulse */}
         <div aria-hidden="true" className="absolute pointer-events-none z-[3]"
           style={{ inset: 0, background: 'radial-gradient(ellipse 55% 40% at 50% 65%, rgba(237,232,224,0.08) 0%, transparent 65%)', mixBlendMode: 'overlay', animation: 'hero-pulse 5s ease-in-out infinite' }} />
+
+        {/* Fine film grain — the texture that reads as "shot on film," not
+            "rendered." Tiny, low-opacity, tiled noise via SVG data-URI so no
+            extra asset request. */}
+        <div aria-hidden="true" className="absolute inset-0 z-[4] pointer-events-none"
+          style={{
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            opacity: 0.05,
+            mixBlendMode: 'overlay',
+          }} />
 
         {/* Vignette */}
         <div className="absolute inset-0 z-[5] pointer-events-none"

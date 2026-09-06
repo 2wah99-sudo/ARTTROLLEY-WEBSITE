@@ -241,7 +241,12 @@ export function useFrameSequence(name: string) {
       if (!frame) return;
       lastDrawnIdx.current = i;
       const src = frame.img;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // DPR cap raised 1.5 -> 2: on a real Retina/high-DPI display (most
+      // premium-feel viewing happens on one) 1.5 was leaving visible
+      // softness/aliasing versus the panel's native pixel density. 2 is the
+      // practical ceiling — beyond it the upscaled 1280x720 source frames
+      // gain nothing, only cost.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cw = Math.round(canvas.clientWidth * dpr);
       const ch = Math.round(canvas.clientHeight * dpr);
       if (canvas.width !== cw || canvas.height !== ch) {
@@ -250,6 +255,11 @@ export function useFrameSequence(name: string) {
       }
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
+      // High-quality resampling: without this the browser's default
+      // bilinear scale of the source frame up to canvas resolution reads
+      // soft/blurry, undermining the "high resolution" feel entirely.
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
       ctx.clearRect(0, 0, cw, ch);
       const s = Math.max(cw / src.width, ch / src.height);
       const w = src.width * s;

@@ -133,7 +133,7 @@ export default function ThreePillars() {
       {/* Section label */}
       <motion.p
         className="label text-gold/60 mb-16 md:mb-20"
-        style={{ letterSpacing: '0.28em' }}
+        style={{ letterSpacing: '0.28em', textShadow: '0 2px 12px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.95)' }}
         initial={{ opacity: 0, x: -16 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}

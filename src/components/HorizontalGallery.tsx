@@ -113,8 +113,12 @@ export default function HorizontalGallery() {
 
   return (
     <section className="relative py-32 md:py-48 overflow-hidden">
-      {/* Header row */}
-      <div className="px-6 md:px-16 flex items-end justify-between mb-12">
+      {/* Header row — text-shadow inherits to the label/heading/drag-hint
+          below, all sitting over AmbientBackground's fabric loop. */}
+      <div
+        className="px-6 md:px-16 flex items-end justify-between mb-12"
+        style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}

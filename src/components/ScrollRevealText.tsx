@@ -8,7 +8,7 @@
  * scroll back up and the words dim again in reverse, exactly in step.
  */
 
-import { useRef } from 'react'
+import { useRef, type CSSProperties } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
 
 function Word({ children, progress, range }: {
@@ -16,7 +16,10 @@ function Word({ children, progress, range }: {
   progress: MotionValue<number>
   range: [number, number]
 }) {
-  const opacity = useTransform(progress, range, [0.18, 1])
+  // Floor raised 0.18 -> 0.45 — the "dim until read" effect is nice on a
+  // plain background, but at 0.18 it was reading as fully invisible against
+  // AmbientBackground's fabric loop, not just "dim."
+  const opacity = useTransform(progress, range, [0.45, 1])
   return (
     <motion.span style={{ opacity }} className="inline-block">
       {children}
@@ -28,9 +31,11 @@ function Word({ children, progress, range }: {
 export default function ScrollRevealText({
   text,
   className = '',
+  style,
 }: {
   text: string
   className?: string
+  style?: CSSProperties
 }) {
   const ref = useRef<HTMLParagraphElement>(null)
   const { scrollYProgress } = useScroll({
@@ -44,7 +49,7 @@ export default function ScrollRevealText({
   const words = text.split(' ')
 
   return (
-    <p ref={ref} className={className}>
+    <p ref={ref} className={className} style={style}>
       {words.map((word, i) => {
         const start = i / words.length
         const end = (i + 1) / words.length

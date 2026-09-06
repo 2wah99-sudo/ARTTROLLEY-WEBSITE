@@ -78,7 +78,14 @@ export default function NumbersStrip() {
         transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
       />
 
-      <div className="relative z-[2] max-w-[1600px] mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-parchment/10">
+      {/* text-shadow inherits to every number + caption below — this strip
+          sits over AmbientBackground's fabric loop and had no shadow at
+          all, so both the big numbers and (especially) the small captions
+          were blending straight into the busy pattern. */}
+      <div
+        className="relative z-[2] max-w-[1600px] mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-parchment/10"
+        style={{ textShadow: '0 3px 18px rgba(0,0,0,0.8), 0 1px 5px rgba(0,0,0,0.9)' }}
+      >
         {STATS.map((s, i) => (
           <motion.div
             key={s.label}
@@ -116,7 +123,7 @@ export default function NumbersStrip() {
               />
             </svg>
 
-            <p className="mt-5 font-sans text-xs text-smoke leading-relaxed whitespace-pre-line max-w-[18ch] group-hover:text-parchment/70 transition-colors duration-500">
+            <p className="mt-5 font-sans text-xs text-parchment/75 leading-relaxed whitespace-pre-line max-w-[18ch] group-hover:text-parchment/90 transition-colors duration-500">
               {s.label}
             </p>
           </motion.div>

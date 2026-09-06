@@ -54,12 +54,18 @@ export default function Voices() {
         &rdquo;
       </span>
 
-      <div className="max-w-[1200px] mx-auto relative z-[2]">
+      {/* text-shadow inherits to the header, quote and attribution below —
+          this section sits over AmbientBackground's fabric loop and had no
+          shadow anywhere. */}
+      <div
+        className="max-w-[1200px] mx-auto relative z-[2]"
+        style={{ textShadow: '0 3px 18px rgba(0,0,0,0.8), 0 1px 5px rgba(0,0,0,0.9)' }}
+      >
         {/* Header row */}
         <Reveal className="mb-20 md:mb-28 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
           <div>
-            <p className="label mb-3 text-parchment/40">Voices</p>
-            <p className="font-serif text-xl font-light text-parchment/50">
+            <p className="label mb-3 text-gold/70">Voices</p>
+            <p className="font-serif text-xl font-light text-parchment/75">
               What people notice after the first wash.
             </p>
           </div>
@@ -104,7 +110,7 @@ export default function Voices() {
                   animate={{ width: '2rem' }}
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                 />
-                <cite className="label not-italic text-parchment/40 tracking-widest">
+                <cite className="label not-italic text-parchment/65 tracking-widest">
                   {QUOTES[active].attr}
                 </cite>
               </footer>

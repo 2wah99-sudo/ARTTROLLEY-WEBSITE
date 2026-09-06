@@ -11,7 +11,7 @@ const CHAPTERS = [
     n: '01',
     tag: 'The Block',
     head: 'Carved by hand, four generations deep.',
-    body: 'G47 works with a single family of block-carvers in Bagru, whose workshop has cut printing blocks since 1932. Each teak block takes upward of eleven days to carve, and is retired after roughly four hundred impressions — worn grain changes the print, and we would rather retire a block than let the motif drift.',
+    body: 'Arttrolley works with a single family of block-carvers in Bagru, whose workshop has cut printing blocks since 1932. Each teak block takes upward of eleven days to carve, and is retired after roughly four hundred impressions — worn grain changes the print, and we would rather retire a block than let the motif drift.',
     img: '/flow-assets/craft-block-carving-2k.webp',
     reverse: false,
   },
@@ -117,10 +117,25 @@ export default function Craftsmanship() {
           viewport={{ once: true }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="label mb-4 text-parchment/40">The Craft &amp; Atelier</p>
+          {/* text-shadow added on both — this header sits directly over the
+              AmbientFlowVideo fabric loop (restored to full color per user
+              request), and its light cream floral passages were blending
+              straight into parchment-colored text. A dark shadow holds
+              contrast against ANY patch of that video, not just the frame
+              this was caught on. */}
+          <p
+            className="label mb-4 text-gold/80"
+            style={{ textShadow: '0 2px 16px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.9)' }}
+          >
+            The Craft &amp; Atelier
+          </p>
           <h2
             className="font-serif font-light text-parchment max-w-3xl"
-            style={{ fontSize: 'clamp(2rem, 4.5vw, 4rem)', lineHeight: 1.1 }}
+            style={{
+              fontSize: 'clamp(2rem, 4.5vw, 4rem)',
+              lineHeight: 1.1,
+              textShadow: '0 4px 24px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.85)',
+            }}
           >
             Proof, not a promise. Every piece is an artifact of heritage craft.
           </h2>
@@ -165,11 +180,21 @@ export default function Craftsmanship() {
               <div className="relative">
                 <ChapterWatermark n={c.n} />
 
-                <p className="label mb-5 text-gold/70 relative">{c.tag}</p>
+                <p
+                  className="label mb-5 text-gold/70 relative"
+                  style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
+                >
+                  {c.tag}
+                </p>
                 {/* Diagonal wipe reveal — a ghost duplicate of the headline
                     sits underneath at low opacity while the real text sweeps
                     in from behind a diagonal clip edge, so mid-transition you
-                    briefly see both the settling text and its own afterimage. */}
+                    briefly see both the settling text and its own afterimage.
+                    text-shadow on the real headline and body copy: both sit
+                    directly over the AmbientFlowVideo fabric loop, whose
+                    light cream floral passages were blending straight into
+                    parchment-colored text (same fix as the section header
+                    above, needed per-chapter since each one repeats it). */}
                 <div className="relative" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 3rem)' }}>
                   <h3
                     aria-hidden="true"
@@ -179,6 +204,7 @@ export default function Craftsmanship() {
                   </h3>
                   <motion.h3
                     className="font-serif font-light text-parchment leading-[1.1] relative"
+                    style={{ textShadow: '0 4px 22px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.95), 0 0 40px rgba(0,0,0,0.6)' }}
                     initial={{ clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' }}
                     whileInView={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
                     viewport={{ once: true, margin: '-10% 0px' }}
@@ -202,7 +228,10 @@ export default function Craftsmanship() {
                   style={{ width: '2rem' }}
                 />
 
-                <p className="prose-body mt-7 font-sans text-parchment/65 font-light max-w-[48ch]">
+                <p
+                  className="prose-body mt-7 font-sans text-parchment/65 font-light max-w-[48ch]"
+                  style={{ textShadow: '0 2px 12px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.6)' }}
+                >
                   {c.body}
                 </p>
 

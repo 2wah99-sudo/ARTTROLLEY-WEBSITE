@@ -53,14 +53,13 @@ export default function AmbientFlowVideo({
           top: 0,
           height: '160%',
           y,
-          // Pulled back from 0.55/1.6 — bright patches in the fabric loop
-          // were reaching near-white under 'screen' blend, which is exactly
-          // where light parchment-coloured text (used everywhere from the
-          // Manifesto down) loses contrast and disappears into it. This is
-          // now dim enough to stay a background, not compete with content.
-          opacity: 0.32,
-          filter: 'brightness(1.15)',
-          mixBlendMode: 'screen',
+          // Restored to the clip's original color — 'screen' blend was
+          // washing every bright patch toward white, which is what made it
+          // read as a pale, desaturated ghost instead of the actual
+          // block-print footage. Plain opacity over the page background
+          // keeps it a background layer (content still sits clearly on top)
+          // without stripping its color.
+          opacity: 0.7,
         }}
         src="/videos/ambient-flow.mp4"
         autoPlay

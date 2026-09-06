@@ -71,9 +71,17 @@ export default function MarqueeTicker({
         >
           {repeated.map((word, i) => (
             <span key={i} className="flex items-center">
+              {/* Raised from /28 + added text-shadow — this ticker sits over
+                  AmbientBackground's fabric loop in most places it's used,
+                  and its light cream floral passages were nearly erasing
+                  this at the old opacity with no shadow at all. */}
               <span
-                className="label text-parchment/28 uppercase"
-                style={{ letterSpacing: '0.22em', fontSize: '0.65rem' }}
+                className="label text-parchment/55 uppercase"
+                style={{
+                  letterSpacing: '0.22em',
+                  fontSize: '0.65rem',
+                  textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)',
+                }}
               >
                 {word}
               </span>

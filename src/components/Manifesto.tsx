@@ -131,7 +131,8 @@ export default function Manifesto() {
 
       {/* Chapter marker */}
       <motion.span
-        className="absolute top-12 left-6 md:left-16 label text-parchment/20 tabular-nums z-[2]"
+        className="absolute top-12 left-6 md:left-16 label text-parchment/45 tabular-nums z-[2]"
+        style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)' }}
         initial={{ opacity: 0, x: -12 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
@@ -145,7 +146,14 @@ export default function Manifesto() {
         <AnimatedRule />
       </div>
 
-      <motion.div style={{ y }} className="max-w-[1440px] relative z-[2]">
+      {/* text-shadow inherits to the whole headline + body block below — this
+          section sits directly over AmbientBackground's fabric loop, and the
+          headline had NO shadow at all, so it was reading as almost fully
+          blended into the busy pattern at rest. */}
+      <motion.div
+        style={{ y, textShadow: '0 4px 24px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.85)' }}
+        className="max-w-[1440px] relative z-[2]"
+      >
         {/* Word-by-word headline reveal */}
         <h2
           className="font-serif font-light leading-[1.04] text-parchment"
@@ -156,7 +164,7 @@ export default function Manifesto() {
           <WordReveal text="You either collect a" baseDelay={0.2} />{' '}
           <motion.em
             className="text-clay not-italic"
-            style={{ borderBottom: '2px solid rgba(181,98,42,0.4)' }}
+            style={{ borderBottom: '2px solid rgba(181,98,42,0.4)', textShadow: '0 2px 8px rgba(0,0,0,0.95), 0 4px 26px rgba(0,0,0,0.9)' }}
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -179,6 +187,7 @@ export default function Manifesto() {
           >
             <ScrollRevealText
               className="prose-body font-sans md:text-lg text-smoke font-light"
+              style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
               text="Slow fashion, heritage craft preserved by hand, and an uncompromising standard of artisanal luxury — Arttrolley makes clothing the way it was made before speed became the point."
             />
             <a
