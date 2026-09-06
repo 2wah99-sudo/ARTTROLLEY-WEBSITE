@@ -91,12 +91,32 @@ export function useFrameSequence(name: string) {
       // Eagerly fetch AND decode the first 120 frames before the user scrolls.
       // This is the key to smooth scrubbing: the opening stretch of the film
       // is always resident in decoded form so scroll-start never cold-misses.
+      //
+      // CRITICAL: loadedUpToRef (which gates how far the caller lets scroll
+      // progress via getLoadedFraction) must advance PER FRAME as each blob
+      // actually arrives -- not once, after the entire eager batch settles.
+      // The previous version set loadedUpToRef only after `await
+      // Promise.all(...)` for all 120 eager fetches completed. On localhost
+      // that Promise.all resolves near-instantly so the bug was invisible;
+      // on a real network, the whole batch can take several seconds (worse
+      // if even one of the 120 requests is slow), and for that entire
+      // window getLoadedFraction() reported ~0 -- clamping scroll to
+      // ~frame 10 the whole time. That is precisely the "stuck after 1-2
+      // frames" production symptom. Advancing the mark after every single
+      // blob fixes it: the buffer fraction now climbs continuously from
+      // the first frame onward instead of jumping once at the very end.
       const EAGER = Math.min(120, m.count);
+      const advanceLoadedMark = () => {
+        let i = loadedUpToRef.current + 1;
+        while (i < m.count && blobs.current[i]) i++;
+        loadedUpToRef.current = i - 1;
+      };
       const eagerFetch = async (i: number) => {
         try {
           const b = await fetch(url(i)).then((r) => r.blob());
           if (!alive) return;
           blobs.current[i] = b;
+          advanceLoadedMark();
           // Decode immediately while still within eager window
           if (i < EAGER && decoding.current.size < MAX_INFLIGHT && !frames.current.has(i)) {
             decoding.current.add(i);
@@ -116,19 +136,8 @@ export function useFrameSequence(name: string) {
         }
       }));
 
-      loadedUpToRef.current = EAGER - 1;
-
       // Then fetch remaining blobs in order (no decode — decode window handles that).
-      // Track contiguous progress: since workers pull in round-robin order,
-      // the highest index that is safe to call "loaded" is the run of
-      // consecutively-filled slots from EAGER onward, not just the max index
-      // seen (workers finish out of order).
       let next = EAGER;
-      const advanceLoadedMark = () => {
-        let i = loadedUpToRef.current + 1;
-        while (i < m.count && blobs.current[i]) i++;
-        loadedUpToRef.current = i - 1;
-      };
       const worker = async () => {
         while (alive) {
           const i = next++;
