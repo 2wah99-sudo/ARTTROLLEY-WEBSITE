@@ -51,6 +51,16 @@ export default function MarqueeTicker({
       className={`relative overflow-hidden select-none ${className}`}
       aria-hidden="true"
     >
+      {/* Local scrim band — this ticker sits over AmbientBackground's
+          fabric loop in most places it's used, kept at full vibrancy per
+          explicit direction. A thin horizontal darkening band behind just
+          the text row (not the whole section) is the local-contrast fix
+          instead of dimming the shared background. */}
+      <div
+        className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-16 md:h-20 -z-10 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(6,6,6,0.6) 30%, rgba(6,6,6,0.6) 70%, transparent 100%)' }}
+      />
+
       {/* Top rule */}
       {(rules === 'top' || rules === 'both') && (
         <div className="absolute top-0 left-0 right-0 h-px bg-parchment/12" />

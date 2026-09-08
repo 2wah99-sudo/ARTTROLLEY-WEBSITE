@@ -8,6 +8,7 @@
  */
 
 import { motion } from 'framer-motion'
+import TextScrim from './TextScrim'
 import { PRODUCTS } from '@/lib/products'
 
 const LAYOUT = [
@@ -30,9 +31,10 @@ export default function TiltedCollage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-16 md:mb-24"
+          className="relative mb-16 md:mb-24"
           style={{ textShadow: '0 4px 22px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' }}
         >
+          <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-16 md:-inset-y-12" />
           <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
             At a Glance
           </p>
@@ -58,7 +60,7 @@ export default function TiltedCollage() {
                 data-cursor-label="View"
                 initial={{ opacity: 0, rotate: L.rotate * 2.4, y: 40 }}
                 whileInView={{ opacity: 1, rotate: L.rotate, y: 0 }}
-                viewport={{ once: true, margin: '-8% 0px' }}
+                viewport={{ once: true, margin: '0px 0px 15% 0px' }}
                 whileHover={{ rotate: 0, scale: 1.03, zIndex: 10 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: (i % 6) * 0.08 }}
               >

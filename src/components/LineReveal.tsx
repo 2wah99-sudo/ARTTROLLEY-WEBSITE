@@ -59,7 +59,11 @@ export default function LineReveal({
           className="block overflow-hidden"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
+          // Positive bottom margin (was a symmetric -10% shrink) — see
+          // Reveal.tsx for the full rationale. Triggers the reveal before
+          // the headline is actually on-screen so a normal scroll speed
+          // doesn't outrun the line-by-line stagger.
+          viewport={{ once: true, margin: '0px 0px 15% 0px' }}
         >
           <motion.span
             className={`block will-change-transform ${lineClassName}`}

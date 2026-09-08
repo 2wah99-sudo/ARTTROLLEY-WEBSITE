@@ -31,7 +31,7 @@ export default function FullBleedCTA() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.img
-          src="/frames/hero/frame_180.webp"
+          src="/frames/hero/frame_0352.webp" // was frame_0376 before the -24 renumber for the frame-25 hero start
           alt="Arttrolley heritage textiles"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ y: imgY, scale: 1.16 }}

@@ -47,11 +47,11 @@ export default function CustomCursor() {
     const seed = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
     gsap.set([dot, ring], { x: seed.x, y: seed.y })
 
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       dotX(e.clientX);  dotY(e.clientY)
       ringX(e.clientX); ringY(e.clientY)
     }
-    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointermove', onMove, { passive: true })
 
     // — hover expand helpers —
     const expand = (el: Element) => {
@@ -81,27 +81,40 @@ export default function CustomCursor() {
       gsap.to(dot, { scale: 1, duration: 0.25, ease: 'power2.out' })
     }
 
-    // Attach to all interactive elements present now and watch for new ones
-    // (Framer Motion mounts sections lazily on scroll)
-    const attach = (root: Document | HTMLElement = document) => {
-      root.querySelectorAll('a, button, [data-magnetic], [data-cursor-expand]').forEach(el => {
-        if ((el as HTMLElement).dataset.cursorAttached) return
-        ;(el as HTMLElement).dataset.cursorAttached = '1'
-        el.addEventListener('pointerenter', () => expand(el))
-        el.addEventListener('pointerleave', collapse)
-      })
+    // Event delegation instead of a MutationObserver. The previous approach
+    // re-queried and re-attached listeners across the ENTIRE document.body
+    // subtree on every single DOM mutation — and Framer Motion mounts/
+    // unmounts sections constantly as they scroll into/out of view, so that
+    // observer was firing (and doing a full querySelectorAll pass) far more
+    // often than the cursor itself needed updates. That main-thread work was
+    // competing directly with the cursor's own rAF-driven quickTo updates,
+    // which is what read as cursor lag/stutter. Two delegated listeners on
+    // `document` cover every current AND future matching element with zero
+    // observer overhead and no attach/dataset bookkeeping.
+    const HOVER_SELECTOR = 'a, button, [data-magnetic], [data-cursor-expand]'
+    let hovered: Element | null = null
+
+    const onPointerOver = (e: PointerEvent) => {
+      const el = (e.target as Element)?.closest?.(HOVER_SELECTOR)
+      if (!el || el === hovered) return
+      hovered = el
+      expand(el)
     }
-
-    attach()
-
-    // MutationObserver to catch elements added after initial paint
-    const mo = new MutationObserver(() => attach())
-    mo.observe(document.body, { childList: true, subtree: true })
+    const onPointerOut = (e: PointerEvent) => {
+      if (!hovered) return
+      const related = e.relatedTarget as Element | null
+      if (related && hovered.contains(related)) return // moved to a child, still "inside"
+      hovered = null
+      collapse()
+    }
+    document.addEventListener('pointerover', onPointerOver, { passive: true })
+    document.addEventListener('pointerout', onPointerOut, { passive: true })
 
     return () => {
       document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerover', onPointerOver)
+      document.removeEventListener('pointerout', onPointerOut)
       document.documentElement.classList.remove('has-custom-cursor')
-      mo.disconnect()
     }
   }, [])
 

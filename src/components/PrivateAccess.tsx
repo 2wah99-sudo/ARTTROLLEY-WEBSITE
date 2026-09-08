@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import GoldenDust from './GoldenDust'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 
 export default function PrivateAccess() {
   const [sent, setSent] = useState(false)
@@ -32,6 +33,7 @@ export default function PrivateAccess() {
         className="relative max-w-[1000px] mx-auto text-center z-[2]"
         style={{ textShadow: '0 3px 18px rgba(0,0,0,0.8), 0 1px 5px rgba(0,0,0,0.9)' }}
       >
+        <TextScrim inset="-inset-x-6 -inset-y-10 md:-inset-x-16 md:-inset-y-16" />
         <motion.div
           initial={{ opacity: 0, y: 36 }}
           whileInView={{ opacity: 1, y: 0 }}

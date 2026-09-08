@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
+import TextScrim from './TextScrim'
 
 // AI-generated (Google Flow / Nano Banana 2) bespoke craft photography,
 // replacing the earlier generic Unsplash stock — locally upscaled to ~2K.
@@ -116,7 +117,9 @@ export default function Craftsmanship() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative"
         >
+          <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-16 md:-inset-y-12" />
           {/* text-shadow added on both — this header sits directly over the
               AmbientFlowVideo fabric loop (restored to full color per user
               request), and its light cream floral passages were blending
@@ -164,7 +167,7 @@ export default function Craftsmanship() {
             <motion.div
               initial={{ opacity: 0, x: c.reverse ? 40 : -40 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-8% 0px' }}
+              viewport={{ once: true, margin: '0px 0px 15% 0px' }}
               transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <CraftImage src={c.img} alt={c.tag} />
@@ -174,10 +177,11 @@ export default function Craftsmanship() {
             <motion.div
               initial={{ opacity: 0, x: c.reverse ? -40 : 40 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-8% 0px' }}
+              viewport={{ once: true, margin: '0px 0px 15% 0px' }}
               transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
             >
               <div className="relative">
+                <TextScrim inset="-inset-x-6 -inset-y-6 md:-inset-x-10 md:-inset-y-10" />
                 <ChapterWatermark n={c.n} />
 
                 <p
@@ -207,7 +211,7 @@ export default function Craftsmanship() {
                     style={{ textShadow: '0 4px 22px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.95), 0 0 40px rgba(0,0,0,0.6)' }}
                     initial={{ clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)' }}
                     whileInView={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
-                    viewport={{ once: true, margin: '-10% 0px' }}
+                    viewport={{ once: true, margin: '0px 0px 15% 0px' }}
                     transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
                   >
                     {c.head}

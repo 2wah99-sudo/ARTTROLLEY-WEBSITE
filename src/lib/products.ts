@@ -26,6 +26,17 @@ const CRAFT = {
   emb:         '/flow-assets/craft-embroidery-2k.webp',
   embDetail:   '/flow-assets/craft-embroidery-detail-2k.webp',
   model:       '/flow-assets/model-courtyard-kurti-2k.webp',
+  // Second, no-reference generation pass (2026-09-07) — added specifically
+  // to break up how often the five images above repeat across galleries
+  // (some were showing up 8-10 times each). Rotated into the same slots
+  // below rather than appended only at the end, so the repetition is
+  // actually reduced, not just given more members that still go unused.
+  hands:       '/flow-assets/craft-process/craft-artisan-hands.jpg',
+  stamp:       '/flow-assets/craft-process/craft-teak-stamp.jpg',
+  blocksRow:   '/flow-assets/craft-process/craft-teak-blocks-row.jpg',
+  blocksArchive: '/flow-assets/craft-process/craft-blocks-archive.jpg',
+  loom:        '/flow-assets/craft-process/craft-loom-weave.jpg',
+  zardozi:     '/flow-assets/craft-process/craft-zardozi-embroidery.jpg',
 }
 // Product photography — Flow Nano Banana 2, 2K upscaled
 const PROD = {
@@ -105,7 +116,7 @@ export const PRODUCTS: Product[] = [
     note: 'Pomegranate dye, exposed panel seams',
     price: 8400,
     img: PROD.ochrePanel,
-    gallery: [PROD.ochrePanel, CRAFT.dye, CRAFT.model],
+    gallery: [PROD.ochrePanel, CRAFT.hands, CRAFT.model],
     description:
       'A two-piece set in pomegranate-rind ochre, cut in four panels with the seams left exposed and top-stitched in indigo thread — construction as decoration, not hidden inside a lining.',
     materials: [
@@ -126,7 +137,7 @@ export const PRODUCTS: Product[] = [
     note: 'Raw handloom, minimal thread trim',
     price: 5600,
     img: PROD.charkha,
-    gallery: [PROD.charkha, CRAFT.block, CRAFT.model],
+    gallery: [PROD.charkha, CRAFT.stamp, CRAFT.blocksRow],
     description:
       'Undyed, unprinted, and deliberately plain — this co-ord is here for the yarn. Spun on a charkha, woven on a pit-loom, finished with a single line of indigo thread trim at the cuff. The quietest piece in the studio.',
     materials: [
@@ -168,7 +179,7 @@ export const PRODUCTS: Product[] = [
     note: 'Limited run — nine pieces, hand-numbered',
     price: 11400,
     img: PROD.zardoziDetail,
-    gallery: [PROD.zardoziDetail, CRAFT.emb, CRAFT.embDetail],
+    gallery: [PROD.zardoziDetail, CRAFT.blocksArchive, CRAFT.loom],
     description:
       'Nine pieces, hand-numbered on the inside seam. Each season\'s studio edit takes one motif to its most elaborate version — this run pairs the star block with a full embroidered star field across the yoke.',
     materials: [
@@ -210,7 +221,7 @@ export const PRODUCTS: Product[] = [
     note: 'Two-piece, dabu resist, everyday weight',
     price: 6200,
     img: PROD.bagruSalwar,
-    gallery: [PROD.bagruSalwar, CRAFT.dye, CRAFT.model],
+    gallery: [PROD.bagruSalwar, CRAFT.zardozi, CRAFT.model],
     description:
       'The set we recommend to anyone new to hand block-print — a kameez and salwar in a lightweight dabu-resist cotton, sized for daily wear rather than an occasion. Nothing precious about it, which is exactly the point.',
     materials: [
@@ -231,7 +242,7 @@ export const PRODUCTS: Product[] = [
     note: 'Hand-block ivory, zari-edged panels',
     price: 18400,
     img: PROD.ivoryLehenga,
-    gallery: [PROD.ivoryLehenga, CRAFT.emb, CRAFT.block],
+    gallery: [PROD.ivoryLehenga, CRAFT.hands, CRAFT.stamp],
     description:
       'Ivory block-print skirt panels edged in hand-laid zari thread, paired with a rust dupatta carrying the same star motif that opens every Arttrolley collection. Built for a long day of standing, dancing, and being looked at.',
     materials: [
@@ -273,7 +284,7 @@ export const PRODUCTS: Product[] = [
     note: 'South Indian silhouette, gold border',
     price: 21200,
     img: PROD.kanjeevaram,
-    gallery: [PROD.kanjeevaram, CRAFT.emb, CRAFT.dye],
+    gallery: [PROD.kanjeevaram, CRAFT.blocksRow, CRAFT.dye],
     description:
       'A nod to the South Indian silk drape, reworked in our own block-printed cotton with a woven gold border. Heavier than the rest of the collection by design — this is a piece meant to stand still in, not walk fast in.',
     materials: [
@@ -294,7 +305,7 @@ export const PRODUCTS: Product[] = [
     note: 'Floral block-print, matching dupatta',
     price: 8900,
     img: PROD.roseGardenSuit,
-    gallery: [PROD.roseGardenSuit, CRAFT.dye, CRAFT.emb],
+    gallery: [PROD.roseGardenSuit, CRAFT.blocksArchive, CRAFT.emb],
     description:
       'A three-piece suit set — kurti, pant, and dupatta — carrying the same rose motif across all three, hand-carved as one continuous block so the pattern lines up wherever the pieces meet. Soft, warm-weather cotton throughout.',
     materials: [
@@ -336,7 +347,7 @@ export const PRODUCTS: Product[] = [
     note: 'Hand-block, mirror-set collar',
     price: 15600,
     img: PROD.bagruSherwani,
-    gallery: [PROD.bagruSherwani, CRAFT.emb, CRAFT.embDetail],
+    gallery: [PROD.bagruSherwani, CRAFT.loom, CRAFT.embDetail],
     description:
       'The men\'s line stays small and deliberate — one sherwani per season. This run is block-printed in a muted repeat with a mirror-set collar, cut long and straight, built from the same cloth and the same hands as everything else we make.',
     materials: [
@@ -357,7 +368,7 @@ export const PRODUCTS: Product[] = [
     note: 'Warm rust dye, contrast piping',
     price: 5900,
     img: PROD.terracottaKurti,
-    gallery: [PROD.terracottaKurti, CRAFT.block, CRAFT.model],
+    gallery: [PROD.terracottaKurti, CRAFT.zardozi, CRAFT.hands],
     description:
       'Warm terracotta over raw cotton, finished with a thin contrast piping along the placket — a small, deliberate detail that keeps this from reading as plain. One of the more wearable pieces in the studio, built for repeat use.',
     materials: [
@@ -378,7 +389,7 @@ export const PRODUCTS: Product[] = [
     note: 'Ombre block-print, hand-rolled edge',
     price: 7400,
     img: PROD.sunsetDupatta,
-    gallery: [PROD.sunsetDupatta, CRAFT.dye, CRAFT.block],
+    gallery: [PROD.sunsetDupatta, CRAFT.stamp, CRAFT.block],
     description:
       'A kurti and dupatta set in a soft sunset gradient — pink bleeding into ochre — achieved by dipping the same block-printed cloth twice, at two depths, in the same dye bath. The dupatta finishes in a hand-rolled edge, no machine hem anywhere on the piece.',
     materials: [
@@ -399,7 +410,7 @@ export const PRODUCTS: Product[] = [
     note: 'Deep pink, hand-set mirror work',
     price: 19800,
     img: PROD.kurtCourtyardB,
-    gallery: [PROD.kurtCourtyardB, PROD.zardoziDetail, CRAFT.embDetail],
+    gallery: [PROD.kurtCourtyardB, PROD.zardoziDetail, CRAFT.blocksRow],
     description:
       'Rani pink, a shade reserved for the pieces we\'re proudest of. Mirror work is hand-set across the choli in a star field that echoes our original block motif, scaled to catch light as the skirt moves.',
     materials: [
@@ -420,7 +431,7 @@ export const PRODUCTS: Product[] = [
     note: 'Deep green, minimal block detail',
     price: 6100,
     img: PROD.emeraldKurti,
-    gallery: [PROD.emeraldKurti, CRAFT.block, CRAFT.model],
+    gallery: [PROD.emeraldKurti, CRAFT.blocksArchive, CRAFT.model],
     description:
       'A deep emerald ground with a single, restrained block motif at the hem — most of this piece is left to the colour. The green comes from a pomegranate-leaf and iron bath, deeper and cooler than anything else we dye.',
     materials: [
@@ -462,7 +473,7 @@ export const PRODUCTS: Product[] = [
     note: 'Earth-tone, zari-shot border',
     price: 9600,
     img: PROD.umberDrape,
-    gallery: [PROD.umberDrape, CRAFT.dye, CRAFT.emb],
+    gallery: [PROD.umberDrape, CRAFT.loom, CRAFT.zardozi],
     description:
       'Umber and warm brown, block-printed in a dense repeat with a zari-shot border along the hem and dupatta edge — a quieter, earth-toned counterpoint to the brighter festive pieces in the archive.',
     materials: [

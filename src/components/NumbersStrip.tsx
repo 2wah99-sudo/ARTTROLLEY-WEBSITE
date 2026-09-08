@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
+import TextScrim from './TextScrim'
 
 function CountUp({
   target,
@@ -16,7 +17,11 @@ function CountUp({
   const [count, setCount] = useState(0)
   const [done, setDone] = useState(false)
   const spanRef = useRef<HTMLSpanElement>(null)
-  const inView = useInView(spanRef, { once: true, margin: '-15% 0px -15% 0px' })
+  // Positive bottom margin (was a symmetric -15% shrink) — see Reveal.tsx
+  // for the rationale. A 1.8s count-up especially needs the lead time: at
+  // the old delayed-trigger margin, a normal scroll speed could carry the
+  // number fully past before it ever finished counting.
+  const inView = useInView(spanRef, { once: true, margin: '0px 0px 15% 0px' })
 
   useEffect(() => {
     if (!inView || target === 0) {
@@ -89,12 +94,13 @@ export default function NumbersStrip() {
         {STATS.map((s, i) => (
           <motion.div
             key={s.label}
-            className="group py-20 md:py-28 px-8 md:px-12 flex flex-col items-center text-center"
+            className="group relative py-20 md:py-28 px-8 md:px-12 flex flex-col items-center text-center"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-10% 0px' }}
+            viewport={{ once: true, margin: '0px 0px 15% 0px' }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: i * 0.09 }}
           >
+            <TextScrim inset="-inset-4" />
             {/* Number */}
             <div
               className="font-serif font-light text-parchment leading-none tabular-nums relative"
@@ -118,7 +124,7 @@ export default function NumbersStrip() {
                 fill="none"
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true, margin: '-10% 0px' }}
+                viewport={{ once: true, margin: '0px 0px 15% 0px' }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: i * 0.09 + 0.7 }}
               />
             </svg>

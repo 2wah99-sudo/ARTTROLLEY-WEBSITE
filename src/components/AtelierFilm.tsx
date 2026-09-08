@@ -288,7 +288,7 @@ export default function AtelierFilm() {
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ display: 'block' }}
+          style={{ display: 'block', willChange: 'transform' }}
           aria-hidden="true"
         />
 

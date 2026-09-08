@@ -30,11 +30,12 @@ export default function AmbientBackground({ children }: { children: ReactNode })
             above the shader, below the dimming overlay so it stays subtle. */}
         <AmbientFlowVideo rangeRef={rangeRef} />
 
-        {/* Ink overlay — pulled way back (was 0.72, effectively blacking
-            the clip out) now that the video itself carries its real color
-            again (see AmbientFlowVideo). Just enough dimming left for text
-            legibility, not enough to read as "black background with a
-            video-shaped shadow on it." */}
+        {/* Ink overlay — back to 0.25, its original value. Per explicit
+            direction the background keeps its full original color/vibrancy
+            site-wide; legibility is handled per-text-block instead (a
+            local backdrop directly behind text content, not a global dim)
+            — see TextLegibilityScrim below and its uses in the components
+            that sit on this background. */}
         <div className="absolute inset-0 z-[2] bg-ink/[0.25] pointer-events-none" />
       </div>
       <div className="relative z-[2]">{children}</div>

@@ -133,6 +133,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Premium cursor + cinematic motion system — rendered above everything */}
         <CustomCursor />
         <MotionSystem />
+        {/* Mobile-only editorial frame — a thin inset gold border around the
+            full viewport, fixed so it stays put through scroll. Phones show
+            content edge-to-edge by default, which on a site this rich
+            (full-bleed hero film, saturated color grade) reads as content
+            spilling off an unfinished canvas rather than a considered,
+            boutique layout. A slim frame gives it the deliberate,
+            gallery-mounted feel the desktop version already gets from its
+            surrounding negative space. md:hidden — desktop/tablet already
+            has enough breathing room around content that this would be
+            redundant there. pointer-events-none + a high z-index keep it
+            purely decorative, never intercepting taps. */}
+        <div
+          aria-hidden="true"
+          className="md:hidden fixed inset-2 z-[60] pointer-events-none border border-gold/25"
+        />
         <CartProvider>
           <SmoothScroll>{children}</SmoothScroll>
           <CartDrawer />

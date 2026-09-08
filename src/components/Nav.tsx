@@ -72,7 +72,19 @@ export default function Nav() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-          scrolled
+          // Was keyed to `scrolled` (scrollY > 40 — fires almost instantly),
+          // meaning the nav's near-opaque backdrop-blur covered the top 64px
+          // of the hero for virtually the entire pinned scroll. On short/wide
+          // viewports that 64px band is large enough relative to the frame
+          // that it mathematically cannot avoid overlapping the subject's
+          // face for at least some part of the film, no matter how the
+          // canvas crop is tuned — the fixed nav footprint alone exceeds the
+          // available headroom above her eyes at some aspect ratios. Keying
+          // it to `pastFilm` instead (a value this component already
+          // computed but never used) keeps the nav fully transparent — text
+          // only, no obscuring bar — for the entire cinematic hero, and only
+          // turns opaque once you've actually scrolled past it.
+          pastFilm
             ? 'bg-ink/95 backdrop-blur-sm border-b border-parchment/10'
             : 'bg-transparent border-b border-transparent'
         }`}

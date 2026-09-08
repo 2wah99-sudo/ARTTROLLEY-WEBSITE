@@ -53,12 +53,10 @@ export default function AmbientFlowVideo({
           top: 0,
           height: '160%',
           y,
-          // Restored to the clip's original color — 'screen' blend was
-          // washing every bright patch toward white, which is what made it
-          // read as a pale, desaturated ghost instead of the actual
-          // block-print footage. Plain opacity over the page background
-          // keeps it a background layer (content still sits clearly on top)
-          // without stripping its color.
+          // Back to 0.7, its original value. Per explicit direction the
+          // background keeps its full original color/vibrancy site-wide —
+          // legibility is now handled per-text-block instead (a local
+          // backdrop directly behind text, not by dimming this video).
           opacity: 0.7,
         }}
         src="/videos/ambient-flow.mp4"

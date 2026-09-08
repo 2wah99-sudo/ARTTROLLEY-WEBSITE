@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import GoldenDust from './GoldenDust'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 
 export default function InquireForm() {
   const [sent, setSent] = useState(false)
@@ -18,6 +19,7 @@ export default function InquireForm() {
       <GoldenDust count={35} className="z-[1]" />
 
       <div className="max-w-[720px] mx-auto text-center relative z-[2]">
+        <TextScrim inset="-inset-x-6 -inset-y-10 md:-inset-x-16 md:-inset-y-16" />
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}

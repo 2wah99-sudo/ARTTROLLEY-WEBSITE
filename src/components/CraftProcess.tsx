@@ -11,6 +11,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 
 const STEPS = [
   {
@@ -18,35 +19,35 @@ const STEPS = [
     title: 'Block Cutting',
     sub: '2–6 weeks per design',
     body: 'A master carver takes a teak block and removes everything that is not the pattern. Every line is cut by hand; the depth of each groove determines how much dye the block will carry. A single mistake on week three means starting over.',
-    img: '/frames/hero/frame_001.webp',
+    img: '/flow-assets/craft-process/craft-blocks-archive.jpg',
   },
   {
     num: '02',
     title: 'Natural Dye Preparation',
     sub: 'Sunrise, every day',
     body: 'Indigo paste is fermented in clay pots for 72 hours. Pomegranate rind, iron-rich mud, henna leaves and alizarin from dried roots are ground, strained and pH-adjusted. The dye batch dictates the season\'s colour range — there is no re-making it.',
-    img: '/frames/hero/frame_100.webp',
+    img: '/frames/hero/frame_0185.webp', // was frame_0209 before the -24 renumber for the frame-25 hero start
   },
   {
     num: '03',
     title: 'Hand Stamping',
     sub: '8 hours per sari length',
     body: 'The artisan charges the block with dye, positions it against the cloth by eye — a skill measured in years, not months — and strikes it once with the heel of the palm. Repeat, across every centimetre, until the length is done.',
-    img: '/frames/hero/frame_200.webp',
+    img: '/flow-assets/craft-process/craft-teak-stamp.jpg',
   },
   {
     num: '04',
     title: 'Wash & Cure',
     sub: '3-day water cycle',
     body: 'Freshly printed cloth is rinsed in the river, dried under the Rajasthan sun, and re-rinsed until the dye locks permanently into the fibre. Skipping any wash strips the colour unevenly. No shortcuts exist here.',
-    img: '/frames/hero/frame_300.webp',
+    img: '/frames/hero/frame_0602.webp', // was frame_0626 before the -24 renumber for the frame-25 hero start
   },
   {
     num: '05',
     title: 'Finishing & Inspection',
     sub: '60-point quality check',
     body: 'Every piece is inspected against natural light. A missed stamp, an uneven run of colour, a block alignment that drifted — any of these sends the cloth back for overdyeing or renders it a reject. Only the pieces that pass become Arttrolley.',
-    img: '/frames/hero/frame_394.webp',
+    img: '/flow-assets/craft-process/craft-zardozi-embroidery.jpg',
   },
 ]
 
@@ -62,9 +63,10 @@ export default function CraftProcess() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+          className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-8"
           style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
         >
+          <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-16 md:-inset-y-12" />
           <div>
             <p className="label text-gold/60 mb-4" style={{ letterSpacing: '0.28em' }}>
               The Process
@@ -97,9 +99,10 @@ export default function CraftProcess() {
 
       {/* ERA-style tab bar — horizontal labels */}
       <div
-        className="px-6 md:px-16 border-b border-parchment/10 mb-0"
+        className="relative px-6 md:px-16 border-b border-parchment/10 mb-0"
         style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)' }}
       >
+        <TextScrim inset="-inset-x-6 -inset-y-3 md:-inset-x-16" strength={0.55} />
         <div className="flex items-end gap-0 overflow-x-auto no-scrollbar">
           {STEPS.map((step, i) => (
             <button
@@ -151,9 +154,10 @@ export default function CraftProcess() {
         >
           {/* Left — text panel */}
           <div
-            className="px-6 md:px-16 py-14 md:py-20 flex flex-col justify-between"
+            className="relative px-6 md:px-16 py-14 md:py-20 flex flex-col justify-between"
             style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
           >
+            <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-10 md:-inset-y-10" />
             <div>
               <p className="label text-gold/50 mb-6" style={{ letterSpacing: '0.22em', fontSize: '0.65rem' }}>
                 {STEPS[active].sub}

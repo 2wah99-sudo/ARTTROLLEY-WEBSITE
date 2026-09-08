@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from './Reveal'
 import GoldenDust from './GoldenDust'
 import FloatingOrbs from './FloatingOrbs'
+import TextScrim from './TextScrim'
 
 const QUOTES = [
   {
@@ -61,6 +62,7 @@ export default function Voices() {
         className="max-w-[1200px] mx-auto relative z-[2]"
         style={{ textShadow: '0 3px 18px rgba(0,0,0,0.8), 0 1px 5px rgba(0,0,0,0.9)' }}
       >
+        <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-16 md:-inset-y-14" />
         {/* Header row */}
         <Reveal className="mb-20 md:mb-28 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
           <div>
@@ -90,11 +92,13 @@ export default function Voices() {
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
+            className="relative"
             initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -20, filter: 'blur(4px)' }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
+            <TextScrim inset="-inset-x-6 -inset-y-6 md:-inset-x-16 md:-inset-y-10" />
             <blockquote>
               <p
                 className="font-serif font-light text-parchment leading-[1.2]"

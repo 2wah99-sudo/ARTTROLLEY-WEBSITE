@@ -73,11 +73,20 @@ export default function DreamDust({ className = '' }: { className?: string }) {
     )
     observer.observe(canvas)
 
-    window.addEventListener('resize', resize)
+    // Debounced (trailing edge, ~150ms) — see GoldenDust.tsx for the same
+    // fix and rationale: a raw resize handler re-measures the canvas on
+    // every single event fired while the user drags the window edge.
+    let resizeTimeout: ReturnType<typeof setTimeout> | undefined
+    const onResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => { resize(); init() }, 150)
+    }
+    window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(raf)
+      clearTimeout(resizeTimeout)
       observer.disconnect()
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', onResize)
     }
   }, [prefersReduced])
 

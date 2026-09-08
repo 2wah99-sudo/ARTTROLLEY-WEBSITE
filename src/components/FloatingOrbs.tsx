@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { getPerfTier, type Tier } from '@/lib/perfTier'
 
 /**
  * FloatingOrbs — Large, heavily-blurred radial-gradient spheres that drift
@@ -24,6 +25,15 @@ export default function FloatingOrbs({
 }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
+  // Deferred to post-mount: getPerfTier() reads navigator/connection, which
+  // don't exist during SSR — calling it directly in the render body gave
+  // the server ('high', its safe fallback) and the client (the real
+  // hardware/network tier) different output on the very first render,
+  // which is a hydration mismatch (React warns and remounts the tree).
+  // Starting at 'high' matches what the server actually rendered, then
+  // correcting to the real tier in an effect keeps that first render
+  // identical and only adjusts afterward.
+  const [tier, setTier] = useState<Tier>('high')
 
   useEffect(() => {
     const el = wrapRef.current
@@ -33,6 +43,10 @@ export default function FloatingOrbs({
     })
     observer.observe(el)
     return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    setTier(getPerfTier())
   }, [])
   const ORB_CONFIGS = [
     {
@@ -107,13 +121,23 @@ export default function FloatingOrbs({
     },
   ].slice(0, count)
 
+  // blur(80px) over a 700-900px element is a real per-frame compositor cost
+  // — with a dozen-plus FloatingOrbs instances down the page, a weak GPU
+  // (most of what "worse conditions" means in practice) pays for this even
+  // while paused-but-visible. Halve both the blur radius and orb count on
+  // low tier rather than cutting the effect entirely — it stays visible,
+  // just cheaper to paint. `tier` comes from state (see above) so it starts
+  // at the SSR-safe 'high' value and only downgrades after mount.
+  const orbs = tier === 'low' ? ORB_CONFIGS.slice(0, Math.ceil(count / 2)) : ORB_CONFIGS
+  const blurPx = tier === 'low' ? 40 : 80
+
   return (
     <div
       ref={wrapRef}
       aria-hidden="true"
       className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
     >
-      {ORB_CONFIGS.map((orb, i) => (
+      {orbs.map((orb, i) => (
         <div
           key={i}
           className={`absolute rounded-full ${orb.animClass}`}
@@ -123,7 +147,7 @@ export default function FloatingOrbs({
             top: orb.top,
             left: orb.left,
             background: `radial-gradient(ellipse at center, ${orb.color} 0%, transparent 70%)`,
-            filter: 'blur(80px)',
+            filter: `blur(${blurPx}px)`,
             animationDelay: orb.delay,
             animationPlayState: inView ? 'running' : 'paused',
             transform: 'translate(-50%, -50%)',

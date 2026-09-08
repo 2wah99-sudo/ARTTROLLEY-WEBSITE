@@ -13,17 +13,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 
-// Replace these with real Arttrolley editorial images once available.
-// For now use the product images that already exist.
+// Real Google Flow / Nano Banana 2 craft-process photography, replacing
+// the earlier hero-film-frame reuse (those were video export snapshots
+// standing in as if they were standalone photos — not distinct shots of
+// their own). Dye Vat / Wash & Cure / Sun Dry still await a matching
+// generation, so those three keep the hero frames for now rather than
+// forcing a mismatch.
 const IMAGES = [
-  { src: '/frames/hero/frame_001.webp', label: 'The Making' },
-  { src: '/frames/hero/frame_050.webp', label: 'Block Print' },
-  { src: '/frames/hero/frame_100.webp', label: 'Dye Vat' },
-  { src: '/frames/hero/frame_150.webp', label: 'Wash & Cure' },
-  { src: '/frames/hero/frame_200.webp', label: 'Hand Press' },
-  { src: '/frames/hero/frame_250.webp', label: 'Sun Dry' },
-  { src: '/frames/hero/frame_300.webp', label: 'Final Form' },
+  { src: '/flow-assets/craft-process/craft-artisan-hands.jpg', label: 'The Making' },
+  { src: '/flow-assets/craft-process/craft-teak-stamp.jpg', label: 'Block Print' },
+  { src: '/frames/hero/frame_0185.webp', label: 'Dye Vat' }, // was frame_0209
+  { src: '/frames/hero/frame_0289.webp', label: 'Wash & Cure' }, // was frame_0313
+  { src: '/flow-assets/craft-process/craft-teak-blocks-row.jpg', label: 'Hand Press' },
+  { src: '/frames/hero/frame_0498.webp', label: 'Sun Dry' }, // was frame_0522
+  { src: '/flow-assets/craft-process/craft-zardozi-embroidery.jpg', label: 'Final Form' },
 ]
 
 export default function HorizontalGallery() {
@@ -116,9 +121,10 @@ export default function HorizontalGallery() {
       {/* Header row — text-shadow inherits to the label/heading/drag-hint
           below, all sitting over AmbientBackground's fabric loop. */}
       <div
-        className="px-6 md:px-16 flex items-end justify-between mb-12"
+        className="relative px-6 md:px-16 flex items-end justify-between mb-12"
         style={{ textShadow: '0 2px 14px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
       >
+        <TextScrim inset="-inset-x-6 -inset-y-6 md:-inset-x-16 md:-inset-y-10" />
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}

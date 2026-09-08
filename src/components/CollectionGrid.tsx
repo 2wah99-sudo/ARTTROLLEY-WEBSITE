@@ -11,6 +11,7 @@
 
 import { motion } from 'framer-motion'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 import { PRODUCTS } from '@/lib/products'
 
 const TEASER = PRODUCTS.slice(0, 4)
@@ -40,7 +41,7 @@ function ProductCard({
     <motion.div
       initial={{ opacity: 0, y: 48 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-6% 0px' }}
+      viewport={{ once: true, margin: '0px 0px 15% 0px' }}
       transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
       className={tall ? 'row-span-2' : ''}
     >
@@ -55,7 +56,7 @@ function ProductCard({
             className="absolute inset-0"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             whileInView={{ clipPath: 'inset(0 0 0% 0)' }}
-            viewport={{ once: true, margin: '-4% 0px' }}
+            viewport={{ once: true, margin: '0px 0px 15% 0px' }}
             transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -142,9 +143,10 @@ export default function CollectionGrid() {
       {/* Section header — ERA style. text-shadow inherits below: this header
           sits over AmbientBackground's fabric loop and had no shadow. */}
       <div
-        className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-20"
+        className="relative flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16 md:mb-20"
         style={{ textShadow: '0 4px 22px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.9)' }}
       >
+        <TextScrim inset="-inset-x-6 -inset-y-8 md:-inset-x-16 md:-inset-y-12" />
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}

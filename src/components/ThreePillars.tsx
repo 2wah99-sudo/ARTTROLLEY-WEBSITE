@@ -130,17 +130,29 @@ const cardVariants = {
 export default function ThreePillars() {
   return (
     <section className="relative px-6 md:px-16 py-32 md:py-48">
-      {/* Section label */}
-      <motion.p
-        className="label text-gold/60 mb-16 md:mb-20"
-        style={{ letterSpacing: '0.28em', textShadow: '0 2px 12px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.95)' }}
-        initial={{ opacity: 0, x: -16 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-      >
-        Why Arttrolley
-      </motion.p>
+      {/* Section label, with a local legibility scrim — a soft dark patch
+          sized just to this label, not the whole section, so the fabric
+          background keeps its full original color everywhere else. */}
+      <div className="relative inline-block mb-16 md:mb-20">
+        <div
+          aria-hidden="true"
+          className="absolute -inset-x-4 -inset-y-3 -z-10 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 100% 130% at 50% 50%, rgba(6,6,6,0.65) 0%, transparent 75%)',
+          }}
+        />
+        <motion.p
+          className="label text-gold/60"
+          style={{ letterSpacing: '0.28em', textShadow: '0 2px 12px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.95)' }}
+          initial={{ opacity: 0, x: -16 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Why Arttrolley
+        </motion.p>
+      </div>
 
       {/* 3-column grid — ERA Residence "Three Reasons" */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-parchment/8">
@@ -151,7 +163,7 @@ export default function ThreePillars() {
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-6% 0px' }}
+            viewport={{ once: true, margin: '0px 0px 15% 0px' }}
             whileHover={{ y: -6, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
             className="group"
             style={{ transformStyle: 'preserve-3d' }}

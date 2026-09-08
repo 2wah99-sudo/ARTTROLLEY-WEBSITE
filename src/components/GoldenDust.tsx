@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
+import { scaleCount } from '@/lib/perfTier'
 
 /**
  * GoldenDust — A richer, gold-toned variant of DreamDust for the editorial
@@ -53,8 +54,12 @@ export default function GoldenDust({
       h = canvas.height = canvas.clientHeight
     }
 
+    // Scaled down on weak/slow devices — with up to half a dozen of these
+    // mounted down the page, the per-instance mote count multiplies fast.
+    const effectiveCount = scaleCount(count);
+
     const init = () => {
-      motes = Array.from({ length: count }, () => {
+      motes = Array.from({ length: effectiveCount }, () => {
         const gold = Math.random()
         return {
           x: Math.random() * w,
@@ -113,10 +118,20 @@ export default function GoldenDust({
     )
     observer.observe(canvas)
 
-    const onResize = () => { resize(); init() }
+    // Debounced (trailing edge, ~150ms) — a raw window resize fires
+    // continuously while the user drags the window edge, and each call was
+    // synchronously re-measuring the canvas AND reallocating the whole
+    // mote array. Waiting for resize events to go quiet before doing that
+    // work once means a resize drag no longer pays for N reinits, just one.
+    let resizeTimeout: ReturnType<typeof setTimeout> | undefined
+    const onResize = () => {
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => { resize(); init() }, 150)
+    }
     window.addEventListener('resize', onResize)
     return () => {
       cancelAnimationFrame(raf)
+      clearTimeout(resizeTimeout)
       observer.disconnect()
       window.removeEventListener('resize', onResize)
     }

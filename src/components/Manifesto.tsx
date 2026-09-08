@@ -58,9 +58,21 @@ function WordReveal({
         <motion.span
           key={i}
           className="inline-block"
+          // whiteSpace: 'pre' — without it, the browser trims each word
+          // span's own trailing space since it falls at the end of the
+          // inline-block's internal line box, so adjacent words visually
+          // run together ("oryouwatchfrom") despite the space character
+          // being present in the DOM. Same fix this project has needed
+          // before for the same reason on a different reveal component.
+          style={{ whiteSpace: 'pre' }}
           initial={{ opacity: 0, y: 28, filter: 'blur(4px)' }}
           whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          viewport={{ once: true, margin: '-5% 0px -5% 0px' }}
+          // Positive bottom margin (was a symmetric -5% shrink) — triggers
+          // each word's reveal before it's actually on-screen instead of
+          // requiring 5% penetration first, so the per-word stagger has
+          // enough lead time to finish before a normal scroll carries the
+          // phrase past. See Reveal.tsx for the full rationale.
+          viewport={{ once: true, margin: '0px 0px 15% 0px' }}
           transition={{
             duration: 0.9,
             ease: [0.22, 1, 0.36, 1],
@@ -68,7 +80,7 @@ function WordReveal({
           }}
         >
           {word}
-          {i < words.length - 1 ? ' ' : ''}
+          {i < words.length - 1 ? ' ' : ''}
         </motion.span>
       ))}
     </span>
@@ -82,7 +94,7 @@ function AnimatedRule({ delay = 0 }: { delay?: number }) {
       className="bg-gold/50 h-px"
       initial={{ scaleX: 0, originX: 0 }}
       whileInView={{ scaleX: 1 }}
-      viewport={{ once: true, margin: '-10% 0px' }}
+      viewport={{ once: true, margin: '0px 0px 15% 0px' }}
       transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1], delay }}
       style={{ transformOrigin: 'left' }}
     />
@@ -154,6 +166,21 @@ export default function Manifesto() {
         style={{ y, textShadow: '0 4px 24px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.85)' }}
         className="max-w-[1440px] relative z-[2]"
       >
+        {/* Local legibility scrim — a soft dark vignette sized to this text
+            block specifically, not the whole section. The background video
+            keeps its full original color everywhere else on the page; this
+            just darkens the small region directly behind the headline and
+            body copy enough to guarantee contrast, fading out at the edges
+            so it reads as depth/shadow rather than a visible panel. */}
+        <div
+          aria-hidden="true"
+          className="absolute -inset-x-6 -inset-y-10 md:-inset-x-16 md:-inset-y-16 -z-10 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 95% 90% at 50% 50%, rgba(6,6,6,0.7) 0%, rgba(6,6,6,0.45) 45%, transparent 75%)',
+          }}
+        />
+
         {/* Word-by-word headline reveal */}
         <h2
           className="font-serif font-light leading-[1.04] text-parchment"
@@ -182,7 +209,7 @@ export default function Manifesto() {
             className="md:max-w-[48ch] md:text-right"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-10% 0px' }}
+            viewport={{ once: true, margin: '0px 0px 15% 0px' }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
           >
             <ScrollRevealText

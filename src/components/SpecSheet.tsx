@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
 import LineReveal from './LineReveal'
+import TextScrim from './TextScrim'
 
 const DNA = [
   {
@@ -47,11 +48,13 @@ export default function SpecSheet() {
         style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)' }}
       >
         <motion.div
+          className="relative"
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
+          <TextScrim />
           <p className="label mb-3">Fabric DNA — No. AT-014</p>
           <LineReveal
             as="h2"
@@ -76,13 +79,14 @@ export default function SpecSheet() {
           {DNA.map((d, i) => (
             <motion.div
               key={d.label}
-              className="shimmer-card h-full border-r border-b border-parchment/15 p-8 md:p-10
+              className="shimmer-card relative h-full border-r border-b border-parchment/15 p-8 md:p-10
                          hover:bg-parchment/[0.02] transition-colors duration-500 group"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-8% 0px' }}
+              viewport={{ once: true, margin: '0px 0px 15% 0px' }}
               transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
             >
+              <TextScrim inset="-inset-2" strength={0.55} />
               <span className="label text-gold/80 tabular-nums group-hover:text-gold transition-colors duration-500">
                 {d.n}
               </span>

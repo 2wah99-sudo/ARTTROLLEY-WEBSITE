@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import FloatingOrbs from './FloatingOrbs'
+import TextScrim from './TextScrim'
 
 const CLIENT_LINKS = [
   { label: 'Client Care',           href: 'mailto:2wah99@gmail.com' },
@@ -43,6 +44,7 @@ export default function Footer() {
         className="max-w-[1600px] mx-auto relative z-[2]"
         style={{ textShadow: '0 2px 10px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.95)' }}
       >
+        <TextScrim inset="-inset-6 md:-inset-10" strength={0.6} />
         {/* Main grid */}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 md:gap-20 pt-20 md:pt-24 pb-16 border-b border-parchment/[0.08]">
           {/* Brand column */}

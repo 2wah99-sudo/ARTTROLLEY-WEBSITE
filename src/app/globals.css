@@ -276,6 +276,13 @@ html [data-reveal-group] {
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: rgba(237,232,224,0.55);
+    /* Baked-in shadow — this class is used site-wide for small-caps labels
+       and step numbers, many of which sit directly on AmbientBackground's
+       vivid fabric loop with nothing else protecting them. A shadow here
+       fixes every instance at once instead of patching call sites one by
+       one; components that need more (a full local scrim behind a heading
+       or paragraph) still add TextScrim on top of this. */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.95);
   }
 
   /* Reading-pace body copy — long-form prose paragraphs only (Manifesto,
